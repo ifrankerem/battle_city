@@ -1,6 +1,5 @@
 package engine;
 import java.awt.Graphics;
-
 import entity.PlayerTank;
 import model.Direction;
 import util.ImageLoader;
@@ -19,8 +18,6 @@ public class GameEngine {
 		this.player = new PlayerTank(100, 100, 3.0, Direction.NORTH, iManager,iLoader); //TODO x and y will be applied as map info but not ready!
 		this.isPaused = false;
 	}
-
-
 
 	public void update()
 	{			

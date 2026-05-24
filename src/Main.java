@@ -6,6 +6,7 @@ import engine.InputManager;
 import gui.GamePanel;
 import gui.MainFrame;
 import gui.SidePanel;
+import gui.contentPanel;
 import util.ImageLoader;
 
 public class Main {
@@ -17,10 +18,12 @@ public class Main {
 		MainFrame windowMain = new MainFrame();
 		windowMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		windowMain.setResizable(false);
+		contentPanel contentP = new contentPanel();
 		GamePanel gameWindow = new GamePanel(engine);
-		windowMain.add(gameWindow,BorderLayout.CENTER);
+		contentP.add(gameWindow,BorderLayout.CENTER);
 		SidePanel sidePanelWindow = new SidePanel();
-		windowMain.add(sidePanelWindow,BorderLayout.EAST);
+		contentP.add(sidePanelWindow,BorderLayout.EAST);
+		windowMain.add(contentP);
 		windowMain.pack(); //auto setSize according to that ı gave windows
 		windowMain.setVisible(true);
 		gameWindow.requestFocus();

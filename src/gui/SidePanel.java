@@ -5,11 +5,11 @@ import java.awt.Dimension;
 
 public class SidePanel extends JPanel {
 	
-	public static final int SIDEPANEL_WIDTH = 160;
+	public static final int SIDEPANEL_WIDTH = 80;
 
 
 	public SidePanel()
 	{
-		this.setPreferredSize(new Dimension(160,GamePanel.WIDTH));
+		this.setPreferredSize(new Dimension(SIDEPANEL_WIDTH,GamePanel.WIDTH));
 	}
 }
