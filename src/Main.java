@@ -22,21 +22,9 @@ public class Main {
 		SidePanel sidePanelWindow = new SidePanel();
 		windowMain.add(sidePanelWindow,BorderLayout.EAST);
 		windowMain.pack(); //auto setSize according to that ı gave windows
-		GameLoop loop = new GameLoop(engine,gameWindow);
-
-
-
-
-
-
-
-
-
-
-
-
-
 		windowMain.setVisible(true);
-		gameWindow.requestFocus();		
+		gameWindow.requestFocus();
+		GameLoop loop = new GameLoop(engine,gameWindow);
 	}	
 }
+	

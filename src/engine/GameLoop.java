@@ -21,7 +21,7 @@ public class GameLoop implements Runnable{
 
 	public void run()
 	{
-		double drawInterval = 100000000/FPS; // 1 second / frame
+		double drawInterval = 1000000000.0/FPS; // 1 second / frame
 		double nextDrawTıme = System.nanoTime() + drawInterval;
 		while(game != null)
 		{
@@ -31,7 +31,7 @@ public class GameLoop implements Runnable{
 			if(remainingTime < 0)
 				remainingTime = 0; //there is no time left so set to 0
 			try{
-				game.sleep((long)remainingTime); // takes long so casting it
+				game.sleep((long)(remainingTime / 1000000)); // takes long so casting it
 			}
 			catch(InterruptedException e)
 			{

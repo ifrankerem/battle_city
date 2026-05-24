@@ -16,7 +16,7 @@ public class GameEngine {
 	{
 		this.iManager = iManager;
 		this.iLoader = iLoader;
-		this.player = new PlayerTank(0, 0, 3, Direction.NORTH, iManager,iLoader); //TODO x and y will be applied as map info but not ready! 
+		this.player = new PlayerTank(100, 100, 3.0, Direction.NORTH, iManager,iLoader); //TODO x and y will be applied as map info but not ready!
 		this.isPaused = false;
 	}
 
