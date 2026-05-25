@@ -10,6 +10,6 @@ public class SidePanel extends JPanel {
 
 	public SidePanel()
 	{
-		this.setPreferredSize(new Dimension(SIDEPANEL_WIDTH,GamePanel.WIDTH));
+		this.setPreferredSize(new Dimension(SIDEPANEL_WIDTH,GamePanel.GAME_HEIGHT));
 	}
 }

@@ -7,6 +7,7 @@ import gui.GamePanel;
 import gui.MainFrame;
 import gui.SidePanel;
 import gui.contentPanel;
+import level.LevelLoader;
 import util.ImageLoader;
 
 public class Main {
@@ -14,7 +15,9 @@ public class Main {
 	public static void main(String[] args) {
 		InputManager iManager = new InputManager();
 		ImageLoader iLoader = new ImageLoader();
-		GameEngine engine = new GameEngine(iManager,iLoader);
+		LevelLoader levelLoader = new LevelLoader(iLoader);
+		levelLoader.loadMaps();
+		GameEngine engine = new GameEngine(iManager, iLoader, levelLoader.getLevels());
 		MainFrame windowMain = new MainFrame();
 		windowMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		windowMain.setResizable(false);

@@ -1,6 +1,4 @@
 package entity;
-import java.awt.font.GlyphMetrics;
-import java.security.DrbgParameters.NextBytes;
 
 import engine.InputManager;
 import gui.GamePanel;
@@ -16,6 +14,7 @@ public class PlayerTank extends Tank{
 	{
 		super(x,y,speed,dir,iLoader);
 		this.inputs = inputs;
+		this.health = 1;
 	}
 
 	public void updateMovement()
@@ -44,9 +43,9 @@ public class PlayerTank extends Tank{
 					dir = Direction.WEST;
 					nextX -= speed;
 				}
-				if(nextY >= 0 && nextY <= GamePanel.HEIGHT - GamePanel.TILE_SIZE)
+				if(nextY >= 0 && nextY <= GamePanel.GAME_HEIGHT - GamePanel.ENTITY_SIZE)
 					this.y = nextY;
-				if(nextX >= 0 && nextX <= GamePanel.WIDTH - GamePanel.TILE_SIZE)
+				if(nextX >= 0 && nextX <= GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE)
 					this.x = nextX;
 				//updateMovement func calls 60 times in a second so in every 10 frame i reset the counter so animation will be smooth. the animation will change in every 10 frame
 				this.SpriteCounter++;
@@ -58,7 +57,7 @@ public class PlayerTank extends Tank{
 						this.SpriteNumber = 1;
 					this.SpriteCounter = 0;
 				}
-			}
+		}
 
 	}
 

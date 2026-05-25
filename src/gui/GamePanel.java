@@ -10,17 +10,19 @@ import java.awt.Dimension;
 
 public class GamePanel extends JPanel {
 
-    public static final int TILE_SIZE = 32;
-    public static final int ROWS = 13;
-    public static final int COLS = 13;
+	public static final int MAP_CELL_SIZE = 24;
+	public static final int MAP_ROWS = 26;
+	public static final int MAP_COLS = 26;
 
-    public static final int WIDTH = COLS * TILE_SIZE;
-    public static final int HEIGHT = ROWS * TILE_SIZE;	// 416x416
+	public static final int GAME_WIDTH = MAP_COLS * MAP_CELL_SIZE;
+	public static final int GAME_HEIGHT = MAP_ROWS * MAP_CELL_SIZE;
+
+	public static final int ENTITY_SIZE = 48;
 	private GameEngine engine;
 
     public GamePanel(GameEngine engine) {
 		this.engine = engine;
-        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 		this.setDoubleBuffered(true); // improve performance
 		this.setBackground(Color.BLACK);
 		this.addKeyListener(engine.getiManager());

@@ -17,7 +17,6 @@ public class ImageLoader {
 	public ImageLoader()
 	{
 		loadSpriteSheet("/resources/images/spritesheet1.png");
-		splitSpriteSheet();
 	}
 
  private void loadSpriteSheet(String path) {
@@ -34,29 +33,20 @@ public class ImageLoader {
         }
     }
 
-    private void splitSpriteSheet() {
-        int columns = spriteSheet.getWidth() / SPRITE_SIZE;
-        int rows = spriteSheet.getHeight() / SPRITE_SIZE;
+    public BufferedImage getEntitySprite(int row, int col) {
+        int x = col * SPRITE_SIZE;
+        int y = row * SPRITE_SIZE;
+        return spriteSheet.getSubimage(x, y, SPRITE_SIZE, SPRITE_SIZE);
+    }
 
-        sprites = new BufferedImage[rows][columns];
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
-                int x = col * SPRITE_SIZE;
-                int y = row * SPRITE_SIZE;
-
-                sprites[row][col] = spriteSheet.getSubimage(
-                    x,
-                    y,
-                    SPRITE_SIZE,
-                    SPRITE_SIZE
-                );
-            }
-        }
+    public BufferedImage getCellSprite(int row, int col) {
+        int x = col * 8;
+        int y = row * 8;
+        return spriteSheet.getSubimage(x, y, 8, 8);
     }
 
     public BufferedImage getSprite(int row, int col) {
-        return sprites[row][col];
+        return getEntitySprite(row, col);
     }
 
 }

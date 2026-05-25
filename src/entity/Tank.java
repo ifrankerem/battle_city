@@ -12,6 +12,7 @@ public class Tank extends GameObject{
 
 	protected double speed;
 	protected Direction dir;
+	protected int health;
 
 	public Tank(double x, double y, double speed, Direction dir,ImageLoader iLoader)
 	{
@@ -65,7 +66,7 @@ public class Tank extends GameObject{
 		this.updateDraw();
 		int drawX = (int)Math.round(this.x);
 		int drawY = (int)Math.round(this.y);
-		g.drawImage(this.getImage(),drawX,drawY,GamePanel.TILE_SIZE,GamePanel.TILE_SIZE,null);
+		g.drawImage(this.getImage(),drawX,drawY,GamePanel.ENTITY_SIZE,GamePanel.ENTITY_SIZE,null);
 	}
 	
 }
