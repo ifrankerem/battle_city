@@ -2,6 +2,7 @@ package tile;
 
 import util.ImageLoader;
 
+
 public class Water extends Tile {
 
 	public Water(double x, double y, ImageLoader iLoader)
@@ -9,12 +10,27 @@ public class Water extends Tile {
 		super(x, y, iLoader);
 		this.isPassable = false;
 		this.isDestroyable = false;
-		this.image = iLoader.getCellSprite(6, 34);
 	}
-
 
 	public void onHit()
 	{
 
+	}
+
+	public void updateAnimation()
+	{
+		this.SpriteCounter++;
+		if(this.SpriteCounter > 60)
+		{
+			if(this.SpriteNumber == 1)
+				this.SpriteNumber = 2;
+			else if(this.SpriteNumber == 2)
+				this.SpriteNumber = 1;
+			this.SpriteCounter = 0;
+		}
+		if(this.SpriteNumber == 1)
+			this.image = iLoader.getEntitySprite(3, 17);
+		else if(this.SpriteNumber == 2)
+			this.image = iLoader.getEntitySprite(3,16);
 	}
 }

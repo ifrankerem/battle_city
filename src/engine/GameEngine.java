@@ -21,7 +21,7 @@ public class GameEngine {
 		this.player = new PlayerTank(100, 100, 3.0, Direction.NORTH, iManager,iLoader); //TODO x and y will be applied as map info but not ready!
 		this.isPaused = false;
 		this.levels = levels;
-		this.currentLevelindex = 3;
+		this.currentLevelindex = 4;
 	}
 
 	public void update()
@@ -40,6 +40,11 @@ public class GameEngine {
 
 	public InputManager getiManager() {
 		return iManager;
+	}
+
+	public Level getCurrentLevel()
+	{
+		return levels[currentLevelindex];
 	}
 
 	public void draw(Graphics g)

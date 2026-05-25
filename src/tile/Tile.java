@@ -18,10 +18,16 @@ abstract public class Tile extends GameObject {
 
 
 	abstract void onHit();
+
 	public void draw(Graphics g)
 	{
 		int drawX = (int)Math.round(this.x);
 		int drawY = (int)Math.round(this.y);
 		g.drawImage(this.getImage(),drawX,drawY,GamePanel.MAP_CELL_SIZE,GamePanel.MAP_CELL_SIZE,null);
+	}
+
+	public void updateAnimation()
+	{
+		
 	}
 }

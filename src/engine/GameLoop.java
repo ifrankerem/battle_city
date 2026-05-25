@@ -23,10 +23,20 @@ public class GameLoop implements Runnable{
 	{
 		double drawInterval = 1000000000.0/FPS; // 1 second / frame
 		double nextDrawTıme = System.nanoTime() + drawInterval;
+		double lastCheckTıme = System.nanoTime();
+		int frameCounter = 0;
 		while(game != null)
 		{
 			engine.update();
+			engine.getCurrentLevel().updateAnimation();
 			panel.repaint();
+			frameCounter++;
+			if(System.nanoTime() - lastCheckTıme >= 1000000000)
+			{
+				System.out.println("FPS: " + frameCounter);
+				frameCounter = 0;
+				lastCheckTıme = System.nanoTime();
+			}
 			double remainingTime = nextDrawTıme - System.nanoTime();
 			if(remainingTime < 0)
 				remainingTime = 0; //there is no time left so set to 0

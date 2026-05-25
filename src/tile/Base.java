@@ -1,6 +1,7 @@
 package tile;
 
 import util.ImageLoader;
+import java.awt.Graphics;
 
 public class Base extends Tile {
 
@@ -24,8 +25,7 @@ public class Base extends Tile {
 
 	}
 	
-	@Override
-	public void draw(java.awt.Graphics g) {
+	public void draw(Graphics g) {
 		if (this.image != null) {
 			int drawX = (int)Math.round(this.x);
 			int drawY = (int)Math.round(this.y);

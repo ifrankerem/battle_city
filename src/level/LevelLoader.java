@@ -74,7 +74,7 @@ public class LevelLoader {
 							}
 							case '5':
 							{
-								boolean isTopLeft = (row == 24 && col == 12);
+								boolean isTopLeft = (row == 24 && col == 12); //TODO this line for map construction part
 								tile[row][col] = new Base(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader, isTopLeft);
 								break;
 							}
