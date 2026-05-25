@@ -9,12 +9,8 @@ public class Water extends Tile {
 	{
 		super(x, y, iLoader);
 		this.isPassable = false;
+		this.name = "water";
 		this.isDestroyable = false;
-	}
-
-	public void onHit()
-	{
-
 	}
 
 	public void updateAnimation()

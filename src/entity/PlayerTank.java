@@ -4,6 +4,7 @@ import engine.InputManager;
 import gui.GamePanel;
 import model.Direction;
 import util.ImageLoader;
+import level.Level;
 
 public class PlayerTank extends Tank{
 
@@ -17,7 +18,7 @@ public class PlayerTank extends Tank{
 		this.health = 1;
 	}
 
-	public void updateMovement()
+	public void updateMovement(Level currentLevel)
 	{
 		double nextX = x;
 		double nextY = y;
@@ -43,10 +44,11 @@ public class PlayerTank extends Tank{
 					dir = Direction.WEST;
 					nextX -= speed;
 				}
-				if(nextY >= 0 && nextY <= GamePanel.GAME_HEIGHT - GamePanel.ENTITY_SIZE)
+				if(nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width)) && currentLevel.hitboxControl(nextX, nextY, this.hitbox.width, this.hitbox.height))
+				{
 					this.y = nextY;
-				if(nextX >= 0 && nextX <= GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE)
 					this.x = nextX;
+				}
 				//updateMovement func calls 60 times in a second so in every 10 frame i reset the counter so animation will be smooth. the animation will change in every 10 frame
 				this.SpriteCounter++;
 				if(this.SpriteCounter > 10)

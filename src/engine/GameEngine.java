@@ -18,15 +18,15 @@ public class GameEngine {
 	{
 		this.iManager = iManager;
 		this.iLoader = iLoader;
-		this.player = new PlayerTank(100, 100, 3.0, Direction.NORTH, iManager,iLoader); //TODO x and y will be applied as map info but not ready!
+		this.player = new PlayerTank(208, 568, 3.0, Direction.NORTH, iManager,iLoader);
 		this.isPaused = false;
 		this.levels = levels;
-		this.currentLevelindex = 4;
+		this.currentLevelindex = 2;
 	}
 
 	public void update()
 	{			
-		player.updateMovement();
+		player.updateMovement(levels[currentLevelindex]);
 	}
 
 	public boolean get_isPaused()
@@ -51,6 +51,9 @@ public class GameEngine {
 	{
 		levels[currentLevelindex].draw(g);
 		player.draw(g);
+		//enemytank.draw(g);
+		//bullet.draw(g);
+		levels[currentLevelindex].topdraw(g);
 	}
 
 }

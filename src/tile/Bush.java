@@ -7,14 +7,10 @@ public class Bush extends Tile {
 	public Bush(double x, double y, ImageLoader iLoader)
 	{
 		super(x, y, iLoader);
+		this.name = "bush";
 		this.isPassable = true;
 		this.isDestroyable = false;
-		this.image = iLoader.getCellSprite(4, 34);
+		this.image = iLoader.getbush();
 	}
 
-
-	public void onHit()
-	{
-
-	}
 }

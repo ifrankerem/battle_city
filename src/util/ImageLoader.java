@@ -11,15 +11,17 @@ public class ImageLoader {
 
 	private static final int SPRITE_SIZE = 16;
 	private BufferedImage spriteSheet;
+	private BufferedImage bush;
 	private BufferedImage[][] sprites; // sprites in array data structure so ı can reach easily
 	
 	
 	public ImageLoader()
 	{
 		loadSpriteSheet("/resources/images/spritesheet1.png");
+		uploadBushImage("/resources/images/bush.png");
 	}
 
- private void loadSpriteSheet(String path) {
+	private void loadSpriteSheet(String path) {
         try {
             InputStream input = getClass().getResourceAsStream(path);
 
@@ -36,7 +38,7 @@ public class ImageLoader {
     public BufferedImage getEntitySprite(int row, int col) {
         int x = col * SPRITE_SIZE;
         int y = row * SPRITE_SIZE;
-        return spriteSheet.getSubimage(x, y, SPRITE_SIZE, SPRITE_SIZE);
+        return spriteSheet.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
     }
 
     public BufferedImage getCellSprite(int row, int col) {
@@ -48,5 +50,25 @@ public class ImageLoader {
     public BufferedImage getSprite(int row, int col) {
         return getEntitySprite(row, col);
     }
+
+	public void uploadBushImage(String path)
+	{
+		try {
+            InputStream input = getClass().getResourceAsStream(path);
+
+            if (input == null) {
+                throw new IllegalArgumentException("Sprite sheet not found: " + path);
+            }
+
+            bush = ImageIO.read(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+
+	public BufferedImage getbush()
+	{
+		return(bush);
+	}
 
 }

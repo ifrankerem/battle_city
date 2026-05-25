@@ -2,13 +2,17 @@ package entity;
 
 import model.GameObject;
 import util.ImageLoader;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+import level.Level;
+
 import gui.GamePanel;
 
 
 import model.Direction;
 
-public class Tank extends GameObject{
+abstract public class Tank extends GameObject{
 
 	protected double speed;
 	protected Direction dir;
@@ -21,52 +25,34 @@ public class Tank extends GameObject{
 		this.speed = speed;
 	}
 
-	//TODO Will update for enemy sprite numbers!!
-	public void updateDraw()
-	{
-		switch (this.dir) {
-			case Direction.NORTH:
-			{
-				if(this.SpriteNumber == 1)
-					this.image = iLoader.getSprite(0, 0);
-				if(this.SpriteNumber == 2)
-					this.image = iLoader.getSprite(0, 1);
-				break;
-			}
-			case Direction.SOUTH:
-			{
-				if(this.SpriteNumber == 1)
-					this.image = iLoader.getSprite(0, 4);
-				if(this.SpriteNumber == 2)
-					this.image = iLoader.getSprite(0, 5);
-				break;
-			}
-			case Direction.EAST:
-			{
-				if(this.SpriteNumber == 1)
-					this.image = iLoader.getSprite(0, 6);
-				if(this.SpriteNumber == 2)
-					this.image = iLoader.getSprite(0, 7);
-				break;
-			}
-			case Direction.WEST:
-			{
-				if(this.SpriteNumber == 1)
-					this.image = iLoader.getSprite(0, 2);
-				if(this.SpriteNumber == 2)
-					this.image = iLoader.getSprite(0, 3);
-				break;
-			}
-	
-		}
-	}
+	abstract public void updateDraw();
+	abstract public void updateMovement(Level currentLevel);
 
 	public void draw(Graphics g)
 	{
 		this.updateDraw();
+		this.updateHitbox();
 		int drawX = (int)Math.round(this.x);
 		int drawY = (int)Math.round(this.y);
 		g.drawImage(this.getImage(),drawX,drawY,GamePanel.ENTITY_SIZE,GamePanel.ENTITY_SIZE,null);
+		//this.drawHitbox(g);
+	}
+
+	public void initHitbox()
+	{
+		this.hitbox = new Rectangle((int)this.x,(int)this.y,GamePanel.ENTITY_SIZE, GamePanel.ENTITY_SIZE);
+	}
+
+	public void drawHitbox(Graphics g)
+	{
+		g.setColor(Color.RED);
+		g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
 	}
 	
+	public void updateHitbox()
+	{
+		hitbox.x = (int)this.x;
+		hitbox.y = (int)this.y;
+	}
+
 }

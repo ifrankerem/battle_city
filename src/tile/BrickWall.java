@@ -9,14 +9,11 @@ public class BrickWall extends Tile {
 	public BrickWall(double x, double y, ImageLoader iLoader)
 	{
 		super(x, y, iLoader);
+		this.name = "brick";
 		this.isPassable = false;
 		this.isDestroyable = true;
 		this.health = 1;
 		this.image = iLoader.getCellSprite(0, 32);
 	}
 
-	public void onHit()
-	{
-
-	}
 }

@@ -3,6 +3,8 @@ package tile;
 import util.ImageLoader;
 import java.awt.Graphics;
 
+import gui.GamePanel;
+
 public class Base extends Tile {
 
 	private int health;
@@ -10,6 +12,7 @@ public class Base extends Tile {
 	public Base(double x, double y, ImageLoader iLoader, boolean isTopLeft)
 	{
 		super(x, y, iLoader);
+		this.name = "base";
 		this.isPassable = false;
 		this.isDestroyable = false;
 		this.health = 1;
@@ -19,17 +22,13 @@ public class Base extends Tile {
 			this.image = null;
 		}
 	}
-
-	public void onHit()
-	{
-
-	}
 	
 	public void draw(Graphics g) {
 		if (this.image != null) {
 			int drawX = (int)Math.round(this.x);
 			int drawY = (int)Math.round(this.y);
-			g.drawImage(this.image, drawX, drawY, gui.GamePanel.ENTITY_SIZE, gui.GamePanel.ENTITY_SIZE, null);
+			g.drawImage(this.image, drawX, drawY, 48, 48, null);
+			//this.drawHitbox(g);
 		}
 	}
 	
