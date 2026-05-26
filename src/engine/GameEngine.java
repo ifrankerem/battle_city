@@ -18,7 +18,7 @@ public class GameEngine {
 	{
 		this.iManager = iManager;
 		this.iLoader = iLoader;
-		this.player = new PlayerTank(208, 568, 3.0, Direction.NORTH, iManager,iLoader);
+		this.player = new PlayerTank(220, 570, 3.0, Direction.NORTH, iManager,iLoader);
 		this.isPaused = false;
 		this.levels = levels;
 		this.currentLevelindex = 5;
