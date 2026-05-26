@@ -72,7 +72,7 @@ public class Bullet extends GameObject {
 			nextX -= speed;
 		else if(this.dir == Direction.SOUTH)
 			nextY += this.speed;
-		if(nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width)) && currentLevel.hitboxControl(nextX, nextY, this.hitbox.width, this.hitbox.height))
+		if(nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width)) && currentLevel.hitboxControlBullet(nextX, nextY, this.hitbox.width, this.hitbox.height))
 		{
 			this.y = nextY;
 			this.x = nextX;
@@ -119,5 +119,10 @@ public class Bullet extends GameObject {
 	public boolean getActive()
 	{
 		return active;
+	}
+
+	public Rectangle getHitbox()
+	{
+		return hitbox;
 	}
 }

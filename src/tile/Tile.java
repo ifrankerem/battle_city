@@ -6,6 +6,7 @@ import gui.GamePanel;
 import model.GameObject;
 import util.ImageLoader;
 import java.awt.Color;
+import entity.Bullet;
 
 
 abstract public class Tile extends GameObject {
@@ -13,10 +14,12 @@ abstract public class Tile extends GameObject {
 	protected boolean isPassable;
 	protected boolean isDestroyable;
 	protected String name;
+	protected boolean isHitted;
 	
 	public Tile(double x, double y, ImageLoader iLoader)
 	{
 		super(x,y,iLoader);
+		this.isHitted = false;
 	}
 
 
@@ -52,6 +55,28 @@ abstract public class Tile extends GameObject {
 	public String toString()
 	{
 		return this.name;
+	}
+
+	public Tile onHit(Bullet bullet)
+	{
+		Tile newTile = this;
+		if(this.isDestroyable == true)
+			newTile = new EmptyTile(this.x,this.y,iLoader);
+		return newTile;
+	}
+
+	public void setHitted(boolean isHitted) {
+		this.isHitted = isHitted;
+	}
+
+	public boolean getDestroyable()
+	{
+		return isDestroyable;
+	}
+
+	public ImageLoader getImageLoader()
+	{
+		return iLoader;
 	}
 	
 }

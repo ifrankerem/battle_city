@@ -2,6 +2,7 @@ package level;
 
 import gui.GamePanel;
 import tile.Bush;
+import tile.EmptyTile;
 import tile.Tile;
 import tile.Water;
 
@@ -73,10 +74,41 @@ public class Level {
 				// System.out.println("row:" + row + " col: " + col);
 				// System.out.println(tiles[row][col]);
 				if(!tiles[row][col].getisPassable())
-					return false;
+					return false;					
+			}
+		}
+		return true;
+	}
+
+
+
+	public boolean hitboxControlBullet(double nextX, double nextY, int width ,int height)
+	{
+		int leftCol = (int)nextX / GamePanel.MAP_CELL_SIZE;
+		int rightCol = ((int)nextX + width - 1) / GamePanel.MAP_CELL_SIZE;
+		int topRow = (int)nextY / GamePanel.MAP_CELL_SIZE;
+		int bottomRow = ((int)nextY + height -1) / GamePanel.MAP_CELL_SIZE;
+		// division for taking (x,y) cordinates
+		//System.out.println("leftCol: " + leftCol + " rightCol: " + rightCol + " topRow: " + topRow + " bottomRow: " + bottomRow);
+
+		for(int row = topRow; row <= bottomRow ; row++)
+		{
+			for(int col = leftCol; col <= rightCol; col++)
+			{
+				// System.out.println("row:" + row + " col: " + col);
+				// System.out.println(tiles[row][col]);
+				if(!tiles[row][col].getisPassable())
+					{
+						tiles[row][col].setHitted(true);
+						if(tiles[row][col].getDestroyable() == true)
+							tiles[row][col] = new EmptyTile(tiles[row][col].getX(),tiles[row][col].getY(),tiles[row][col].getImageLoader());
+						return false;
+					}					
 			}
 		}
 		return true;
 	}
 
 }
+
+
