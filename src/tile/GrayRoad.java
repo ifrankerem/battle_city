@@ -10,7 +10,7 @@ public class GrayRoad extends Tile {
 		this.name = "gray";
 		this.isPassable = true;
 		this.isDestroyable = false;
-		this.image = iLoader.getSprite(3, 19);
+		this.image = iLoader.getCellSprite(4, 36);
 	}
 
 }

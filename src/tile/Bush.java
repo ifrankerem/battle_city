@@ -10,7 +10,7 @@ public class Bush extends Tile {
 		this.name = "bush";
 		this.isPassable = true;
 		this.isDestroyable = false;
-		this.image = iLoader.getbush();
+		this.image = iLoader.getCellSprite(4, 34);
 	}
 
 }

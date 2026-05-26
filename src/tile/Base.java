@@ -17,7 +17,7 @@ public class Base extends Tile {
 		this.isDestroyable = false;
 		this.health = 1;
 		if (isTopLeft) {
-			this.image = iLoader.getEntitySprite(2, 19);
+			this.image = iLoader.getEntitySprite2(2, 19);
 		} else {
 			this.image = null;
 		}

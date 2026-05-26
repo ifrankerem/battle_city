@@ -3,6 +3,8 @@ package level;
 import gui.GamePanel;
 import tile.Bush;
 import tile.Tile;
+import tile.Water;
+
 import java.awt.Graphics;
 
 
@@ -49,7 +51,8 @@ public class Level {
 		{
 			for(int col = 0; col < GamePanel.MAP_COLS; col++)
 			{
-				tiles[row][col].updateAnimation();
+				if(tiles[row][col] instanceof Water)
+					tiles[row][col].updateAnimation();
 			}	
 		}
 	}

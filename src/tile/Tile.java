@@ -30,7 +30,7 @@ abstract public class Tile extends GameObject {
 
 	public void updateAnimation()
 	{
-		
+		//This for water
 	}
 
 	public void initHitbox()

@@ -21,7 +21,7 @@ public class GameEngine {
 		this.player = new PlayerTank(208, 568, 3.0, Direction.NORTH, iManager,iLoader);
 		this.isPaused = false;
 		this.levels = levels;
-		this.currentLevelindex = 2;
+		this.currentLevelindex = 5;
 	}
 
 	public void update()

@@ -12,7 +12,7 @@ public class SteelWall extends Tile {
 		super(x, y, iLoader);
 		this.name = "steelwall";
 		this.isPassable = false;
-		this.isDestroyable = true; //TODO if player is 3 level !! 
+		this.isDestroyable = false; //TODO if player is 3 level set true!! 
 		this.image = iLoader.getCellSprite(2, 32);
 	}
 

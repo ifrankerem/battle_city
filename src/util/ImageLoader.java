@@ -11,14 +11,14 @@ public class ImageLoader {
 
 	private static final int SPRITE_SIZE = 16;
 	private BufferedImage spriteSheet;
-	private BufferedImage bush;
+	private BufferedImage spriteSheet2;
 	private BufferedImage[][] sprites; // sprites in array data structure so ı can reach easily
 	
 	
 	public ImageLoader()
 	{
 		loadSpriteSheet("/resources/images/spritesheet1.png");
-		uploadBushImage("/resources/images/bush.png");
+		loadSpriteSheet2("/resources/images/spritesheet2.png");
 	}
 
 	private void loadSpriteSheet(String path) {
@@ -35,40 +35,52 @@ public class ImageLoader {
         }
     }
 
-    public BufferedImage getEntitySprite(int row, int col) {
-        int x = col * SPRITE_SIZE;
-        int y = row * SPRITE_SIZE;
-        return spriteSheet.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
-    }
-
-    public BufferedImage getCellSprite(int row, int col) {
-        int x = col * 8;
-        int y = row * 8;
-        return spriteSheet.getSubimage(x, y, 8, 8);
-    }
-
-    public BufferedImage getSprite(int row, int col) {
-        return getEntitySprite(row, col);
-    }
-
-	public void uploadBushImage(String path)
-	{
-		try {
+	private void loadSpriteSheet2(String path) {
+        try {
             InputStream input = getClass().getResourceAsStream(path);
 
             if (input == null) {
                 throw new IllegalArgumentException("Sprite sheet not found: " + path);
             }
 
-            bush = ImageIO.read(input);
+            spriteSheet2 = ImageIO.read(input);
         } catch (IOException e) {
             e.printStackTrace();
         }
-	}
+    }
 
-	public BufferedImage getbush()
-	{
-		return(bush);
-	}
+    public BufferedImage getWaterSprite(int row, int col) {
+        int x = col * SPRITE_SIZE;
+        int y = row * SPRITE_SIZE;
+        return spriteSheet.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
+    }
+
+    public BufferedImage getEntitySprite(int row, int col) {
+        int x = col * SPRITE_SIZE;
+        int y = row * SPRITE_SIZE;
+        return spriteSheet2.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
+    }
+
+    public BufferedImage getCellSprite(int row, int col) {
+        int x = col * 8;
+        int y = row * 8;
+        return spriteSheet2.getSubimage(x, y, 8, 8);
+    }
+
+
+    public BufferedImage getEntitySprite2(int row, int col) {
+        int x = col * SPRITE_SIZE;
+        int y = row * SPRITE_SIZE;
+        return spriteSheet2.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
+    }
+
+
+
+    public BufferedImage getSprite(int row, int col) {
+        return getEntitySprite(row, col);
+    }
+
+
+
 
 }
