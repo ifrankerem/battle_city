@@ -2,10 +2,14 @@ package engine;
 import java.awt.Graphics;
 import entity.PlayerTank;
 import entity.Bullet;
-import entity.Explosion;
+import entity.EnemyTankBase;
+import entity.EnemyTankGreen;
 import level.Level;
 import model.Direction;
+import util.Explosion;
 import util.ImageLoader;
+import util.Spawn;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import entity.Tank;
@@ -20,6 +24,11 @@ public class GameEngine {
 	private int currentLevelindex;
 	private ArrayList <Bullet> bullets;
 	private ArrayList <Explosion> explosions;
+	private ArrayList <EnemyTankBase> enemytanks;
+	private ArrayList <Spawn> spawns;
+	private static final int[][] EnemyBaseSpawnCords = {{10,15},{1,2},{2,3}};
+	private static final int[] PlayerBaseSpawnCords = {220,570};
+	private int maxEnemy = 20; //TODO
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -27,41 +36,78 @@ public class GameEngine {
 		this.iLoader = iLoader;
 		this.bullets = new ArrayList<Bullet>();
 		this.explosions = new ArrayList<Explosion>();
-		this.player = new PlayerTank(220, 570, 3.0, Direction.NORTH, iManager,iLoader,this);
+		this.spawns = new ArrayList<Spawn>();
+		this.playerSpawn();
+		this.enemytanks = new ArrayList<EnemyTankBase>();
+		this.enemySpawn();
 		this.isPaused = false;
 		this.levels = levels;
-		this.currentLevelindex = 32;
+		this.currentLevelindex = 5;
+	}
+
+
+	public void enemySpawn()
+	{	
+		int random = (int)Math.random() % 3;
+		spawns.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
+		EnemyTankGreen deneme = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.NORTH,iLoader);
+		enemytanks.add(deneme);
+	}
+
+	public void playerSpawn()
+	{
+		spawns.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
+		this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
 	}
 
 	public void update()
 	{			
+		this.updateSpawn();
 		player.updateMovement(levels[currentLevelindex],bullets);
+		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
+		while(it_t.hasNext())
+			it_t.next().updateMovement(levels[currentLevelindex],bullets);
 		this.updateBullets();
 		Iterator <Bullet> it = bullets.iterator();
 		while(it.hasNext())
-		{
 			it.next().updateMovement(levels[currentLevelindex]);
-		}
 		this.updateExplosions();
 	}
 
-	public int countBullets()
+	public void updateSpawn()
 	{
-		int count = 1;
-		for(Bullet curr : bullets)
+		Iterator <Spawn> it = spawns.iterator();
+		while(it.hasNext())
 		{
-			if(curr.getOwnerTank() instanceof Tank)
-				count++;
+			Spawn spawn = it.next();
+			spawn.update();
+			if(!spawn.isActive())
+				{
+					it.remove();
+					player.setSpawn(true);
+					Iterator <EnemyTankBase> eit = enemytanks.iterator();
+					while(eit.hasNext())
+						eit.next().setSpawn(true);
+				}
 		}
-		return count;
 	}
+
 
 	public void updateBullets()
 	{
 		if(iManager.get_space())
 		{
-			if(this.countBullets() <= player.getMaxBulletCount())
-				bullets.add(player.getBullet());
+			Bullet playerBullet = player.getBullet();
+			if(playerBullet != null && !bullets.contains(playerBullet) && player.countBullets(bullets) < player.getMaxBulletCount())
+				bullets.add(playerBullet);
+		}
+		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
+		while(it_t.hasNext())
+		{
+			EnemyTankBase enemy = it_t.next();
+			Bullet enemyBullet = enemy.getBullet();
+			if(enemyBullet != null && !bullets.contains(enemyBullet) && enemy.countBullets(bullets) < enemy.getMaxBulletCount())
+				bullets.add(enemyBullet);
 		}
 		Iterator <Bullet> it = bullets.iterator();
 		while(it.hasNext())
@@ -108,8 +154,19 @@ public class GameEngine {
 	public void draw(Graphics g)
 	{
 		levels[currentLevelindex].draw(g);
-		player.draw(g);
-		//enemytank.draw(g);
+		//System.out.println(player.getSpawn());
+		if(player.getSpawn())
+			player.draw(g);
+		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
+		while(it_t.hasNext())
+		{
+			EnemyTankBase curr = it_t.next();
+			if(curr.getSpawn())
+				curr.draw(g);
+		}
+		Iterator <Spawn> sit = spawns.iterator();
+		while(sit.hasNext())
+			sit.next().draw(g);
 		Iterator <Bullet> it = bullets.iterator();
 		while(it.hasNext())
 			it.next().draw(g);

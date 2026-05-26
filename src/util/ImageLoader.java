@@ -21,8 +21,6 @@ public class ImageLoader {
 	private BufferedImage boom2;
 	private BufferedImage boom3;
 
-	
-	
 	public ImageLoader()
 	{
 		this.spriteSheet = loadImage("/resources/images/spritesheet1.png");

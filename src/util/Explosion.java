@@ -1,19 +1,18 @@
-package entity;
+package util;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import util.ImageLoader;
 import gui.GamePanel;
 import model.GameObject;
 import java.awt.Rectangle;
 
 public class Explosion extends GameObject {
 
-	private BufferedImage[] frames;
-	private int frameIndex;
-	private int frameCounter;
-	private boolean active;
-	private static final int FRAME_DELAY = 8;
+	protected BufferedImage[] frames;
+	protected int frameIndex;
+	protected int frameCounter;
+	protected boolean active;
+	protected int FRAME_DELAY = 8;
 
 	public Explosion(double x, double y, ImageLoader iLoader)
 	{
@@ -48,7 +47,6 @@ public class Explosion extends GameObject {
 	{
 		if(!active)
 			return;
-
 		int drawX = (int)Math.round(x) - (GamePanel.ENTITY_SIZE - GamePanel.BULLET_SIZE) / 2;
 		int drawY = (int)Math.round(y) - (GamePanel.ENTITY_SIZE - GamePanel.BULLET_SIZE) / 2;
 		g.drawImage(frames[frameIndex], drawX, drawY, GamePanel.ENTITY_SIZE, GamePanel.ENTITY_SIZE, null);

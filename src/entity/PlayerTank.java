@@ -6,16 +6,15 @@ import model.Direction;
 import util.ImageLoader;
 import java.util.ArrayList;
 import level.Level;
-import engine.GameEngine;
 
 public class PlayerTank extends Tank{
 
 
 	private InputManager inputs;
 
-	public PlayerTank(double x, double y, double speed, Direction dir,InputManager inputs, ImageLoader iLoader,GameEngine engine)
+	public PlayerTank(double x, double y, double speed, Direction dir,InputManager inputs, ImageLoader iLoader)
 	{
-		super(x,y,speed,dir,iLoader,engine);
+		super(x,y,speed,dir,iLoader);
 		this.inputs = inputs;
 		this.health = 1;
 	}
@@ -24,7 +23,9 @@ public class PlayerTank extends Tank{
 	{
 		double nextX = x;
 		double nextY = y;
-		if(inputs.up || inputs.down || inputs.left || inputs.right) // there will be no animation while player standing still
+		if(this.isSpawn)
+		{
+			if(inputs.up || inputs.down || inputs.left || inputs.right) // there will be no animation while player standing still
 		{			
 				if(inputs.up)
 				{
@@ -62,8 +63,10 @@ public class PlayerTank extends Tank{
 					this.SpriteCounter = 0;
 				}
 		}
-		if(inputs.space)
-			this.shoot();
+			if(inputs.space)
+				this.shoot();
+
+		}
 
 	}
 
