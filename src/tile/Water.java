@@ -17,6 +17,7 @@ public class Water extends Tile {
 		this.isDestroyable = false;
 		this.frame1 = iLoader.getWaterSprite(3, 17);
 		this.frame2 = iLoader.getWaterSprite(3, 16);
+		//This done for performance issues.
 		this.image = this.frame1;
 	}
 
