@@ -94,4 +94,9 @@ public class InputManager implements KeyListener {
 	{
 		//dont needed rn
 	}
+
+	public boolean get_space()
+	{
+		return space;
+	}
 }

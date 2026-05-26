@@ -18,6 +18,7 @@ public class GamePanel extends JPanel {
 	public static final int GAME_HEIGHT = MAP_ROWS * MAP_CELL_SIZE;
 
 	public static final int ENTITY_SIZE = 36;
+	public static final int BULLET_SIZE = 8;
 	private GameEngine engine;
 
     public GamePanel(GameEngine engine) {

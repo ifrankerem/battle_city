@@ -4,21 +4,23 @@ import engine.InputManager;
 import gui.GamePanel;
 import model.Direction;
 import util.ImageLoader;
+import java.util.ArrayList;
 import level.Level;
+import engine.GameEngine;
 
 public class PlayerTank extends Tank{
 
 
 	private InputManager inputs;
 
-	public PlayerTank(double x, double y, double speed, Direction dir,InputManager inputs, ImageLoader iLoader)
+	public PlayerTank(double x, double y, double speed, Direction dir,InputManager inputs, ImageLoader iLoader,GameEngine engine)
 	{
-		super(x,y,speed,dir,iLoader);
+		super(x,y,speed,dir,iLoader,engine);
 		this.inputs = inputs;
 		this.health = 1;
 	}
 
-	public void updateMovement(Level currentLevel)
+	public void updateMovement(Level currentLevel,ArrayList <Bullet> bullets)
 	{
 		double nextX = x;
 		double nextY = y;
@@ -60,6 +62,8 @@ public class PlayerTank extends Tank{
 					this.SpriteCounter = 0;
 				}
 		}
+		if(inputs.space)
+			this.shoot();
 
 	}
 
@@ -98,7 +102,6 @@ public class PlayerTank extends Tank{
 					this.image = iLoader.getSprite(0, 3);
 				break;
 			}
-	
 		}
 	}
 
