@@ -11,6 +11,7 @@ import model.Direction;
 import util.Explosion;
 import util.ImageLoader;
 import util.Spawn;
+import util.TankExplosion;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ public class GameEngine {
 	private ArrayList <Explosion> explosions;
 	private ArrayList <EnemyTankBase> enemytanks;
 	private ArrayList <Spawn> spawns;
+	private ArrayList <TankExplosion> tankExplosions;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
 	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
@@ -44,6 +46,7 @@ public class GameEngine {
 		this.iLoader = iLoader;
 		this.bullets = new ArrayList<Bullet>();
 		this.explosions = new ArrayList<Explosion>();
+		this.tankExplosions = new ArrayList<TankExplosion>();
 		this.spawns = new ArrayList<Spawn>();
 		this.playerSpawn();
 		this.enemytanks = new ArrayList<EnemyTankBase>();
@@ -108,6 +111,7 @@ public class GameEngine {
 		while(it.hasNext())
 			it.next().updateMovement(levels[currentLevelindex]);
 		this.updateExplosions();
+		this.updateTankExplosions();
 	}
 
 	public void updateSpawn()
@@ -231,16 +235,15 @@ public class GameEngine {
 			EnemyTankBase enemy = it_t.next();
 			if(enemy.get_isAlive() == false)
 			{
-				explosions.add(new Explosion(enemy.getX(), enemy.getY(), iLoader)); //TODO Different explosion
+				tankExplosions.add(new TankExplosion(enemy.getX(), enemy.getY(), iLoader));
 				it_t.remove();
 			}
 		}
 		if(player.get_isAlive() == false)
 		{
-			explosions.add(new Explosion(player.getX(), player.getY(), iLoader)); //TODO Different explosion
+			tankExplosions.add(new TankExplosion(player.getX(), player.getY(), iLoader));
 			this.playerSpawn();
 			player_max_health--;
-			System.out.println(player_max_health);
 		}
 	}
 
@@ -252,6 +255,19 @@ public class GameEngine {
 			Explosion explosion = it.next();
 			explosion.update();
 			if(!explosion.isActive())
+				it.remove();
+		}
+	}
+
+
+	public void updateTankExplosions()
+	{
+		Iterator <TankExplosion> it = tankExplosions.iterator();
+		while(it.hasNext())
+		{
+			TankExplosion tankExplosions = it.next();
+			tankExplosions.update();
+			if(!tankExplosions.isActive())
 				it.remove();
 		}
 	}
@@ -295,6 +311,9 @@ public class GameEngine {
 		Iterator <Explosion> eit = explosions.iterator();
 		while(eit.hasNext())
 			eit.next().draw(g);
+		Iterator <TankExplosion> tit = tankExplosions.iterator();
+		while(tit.hasNext())
+			tit.next().draw(g);
 		levels[currentLevelindex].topdraw(g);
 	}
 

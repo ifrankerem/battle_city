@@ -20,6 +20,8 @@ public class ImageLoader {
 	private BufferedImage boom1;
 	private BufferedImage boom2;
 	private BufferedImage boom3;
+	private BufferedImage tankboom1;
+	private BufferedImage tankboom2;
 
 	public ImageLoader()
 	{
@@ -32,6 +34,8 @@ public class ImageLoader {
 		this.boom1 = loadImage("/resources/images/boom1.png");
 		this.boom2 = loadImage("/resources/images/boom2.png");
 		this.boom3 = loadImage("/resources/images/boom3.png");
+		this.tankboom1 = loadImage("/resources/images/tankboom1.png");
+		this.tankboom2 = loadImage("/resources/images/tankboom2.png");
 	}
 
 	
@@ -104,7 +108,12 @@ public class ImageLoader {
 		return boom3;
 	}
 
-
+	public BufferedImage getTankboom1() {
+		return tankboom1;
+	}
+	public BufferedImage getTankboom2() {
+		return tankboom2;
+	}
 
 
 }
