@@ -1,20 +1,23 @@
 package engine;
 
 import gui.GamePanel;
+import gui.SidePanel;
 
 public class GameLoop implements Runnable{
 
 
 	private Thread game;
 	private GameEngine engine;
-	private GamePanel panel;
+	private GamePanel gamePanel;
+	private SidePanel sidePanel;
 	public static final int FPS = 60;
 
 
-	public GameLoop(GameEngine engine, GamePanel panel)
+	public GameLoop(GameEngine engine, GamePanel panel, SidePanel sidePanel)
 	{
 		this.engine = engine;
-		this.panel = panel;
+		this.gamePanel = panel;
+		this.sidePanel = sidePanel;
 		game = new Thread(this);
 		game.start();
 	}
@@ -29,7 +32,8 @@ public class GameLoop implements Runnable{
 		{
 			engine.update();
 			engine.getCurrentLevel().updateAnimation();
-			panel.repaint();
+			gamePanel.repaint();
+			sidePanel.repaint();
 			// frameCounter++;
 			// if(System.nanoTime() - lastCheckTıme >= 1000000000)
 			// {

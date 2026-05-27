@@ -118,4 +118,8 @@ abstract public class Tank extends GameObject{
 	{
 		return isAlive;
 	}
+
+	public int getHealth() {
+		return health;
+	}
 }

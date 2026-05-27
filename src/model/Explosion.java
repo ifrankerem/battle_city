@@ -1,9 +1,10 @@
-package util;
+package model;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import gui.GamePanel;
-import model.GameObject;
+import util.ImageLoader;
+
 import java.awt.Rectangle;
 
 public class Explosion extends GameObject {

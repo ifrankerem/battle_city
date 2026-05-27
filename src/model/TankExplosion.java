@@ -1,10 +1,11 @@
-package util;
+package model;
 
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 
 
 import gui.GamePanel;
+import util.ImageLoader;
 
 public class TankExplosion extends Explosion{
 

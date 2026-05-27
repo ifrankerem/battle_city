@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import gui.GamePanel;
 import model.GameObject;
+import model.GameState;
 import util.ImageLoader;
 import java.awt.Color;
 import entity.Bullet;
@@ -78,5 +79,11 @@ abstract public class Tile extends GameObject {
 	{
 		return iLoader;
 	}
+
+	public boolean getisHitted()
+	{
+		return isHitted;
+	}
+
 	
 }

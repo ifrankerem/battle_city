@@ -1,7 +1,6 @@
 package gui;
 
 import javax.swing.JPanel;
-
 import engine.GameEngine;
 import java.awt.Graphics;
 import java.awt.Color;

@@ -14,7 +14,7 @@ public class Base extends Tile {
 		super(x, y, iLoader);
 		this.name = "base";
 		this.isPassable = false;
-		this.isDestroyable = true;
+		this.isDestroyable = false;
 		this.health = 1;
 		if (isTopLeft) {
 			this.image = iLoader.getEntitySprite2(2, 19);
@@ -31,5 +31,7 @@ public class Base extends Tile {
 			//this.drawHitbox(g);
 		}
 	}
+
+
 	
 }

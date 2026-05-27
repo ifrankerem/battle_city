@@ -22,6 +22,11 @@ public class ImageLoader {
 	private BufferedImage boom3;
 	private BufferedImage tankboom1;
 	private BufferedImage tankboom2;
+	private BufferedImage[] digits;
+	private BufferedImage enemyCounterImage;
+	private BufferedImage flagImage;
+	private BufferedImage playerHealthImage;
+	private BufferedImage digits_text;
 
 	public ImageLoader()
 	{
@@ -36,6 +41,12 @@ public class ImageLoader {
 		this.boom3 = loadImage("/resources/images/boom3.png");
 		this.tankboom1 = loadImage("/resources/images/tankboom1.png");
 		this.tankboom2 = loadImage("/resources/images/tankboom2.png");
+		this.digits = new BufferedImage[10];
+		this.digits_text = loadImage("/resources/images/numbers_text.png");
+		this.enemyCounterImage = loadImage("/resources/images/enemy_counter.png");
+		this.flagImage = loadImage("/resources/images/flag.png");
+		this.playerHealthImage = loadImage("/resources/images/player_health.png");
+		this.loadDigits();
 	}
 
 	
@@ -51,6 +62,24 @@ public class ImageLoader {
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Could not load image: " + path, e);
+		}
+	}
+
+	public void loadDigits()
+	{
+		// numbers_text.png is 41x17 with 1px border on all sides and 1px separator row
+		// Layout: [1px border][7px digits][1px sep][7px digits][1px border] = 17 rows
+		//         [1px border][8px * 5 digits] = 41 cols
+		// Digits 0-4 on top (y=1), digits 5-9 on bottom (y=9), each 8x7
+		int cellWidth = 8;
+		int cellHeight = 7;
+
+		for(int i = 0; i < 10; i++) {
+			int col = i % 5;
+			int row = i / 5;
+			int x = 1 + col * cellWidth;
+			int y = 1 + row * (cellHeight + 1); // +1 for separator row
+			this.digits[i] = digits_text.getSubimage(x, y, cellWidth, cellHeight);
 		}
 	}
 
@@ -71,7 +100,6 @@ public class ImageLoader {
         int y = row * 8;
         return spriteSheet2.getSubimage(x, y, 8, 8);
     }
-
 
     public BufferedImage getEntitySprite2(int row, int col) {
         int x = col * SPRITE_SIZE;
@@ -113,6 +141,22 @@ public class ImageLoader {
 	}
 	public BufferedImage getTankboom2() {
 		return tankboom2;
+	}
+
+	public BufferedImage getEnemyCounterImage() {
+		return enemyCounterImage;
+	}
+
+	public BufferedImage getFlagImage() {
+		return flagImage;
+	}
+
+	public BufferedImage getPlayerHealthImage() {
+		return playerHealthImage;
+	}
+
+	public BufferedImage getDigit(int index) {
+		return digits[index];
 	}
 
 

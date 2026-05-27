@@ -1,6 +1,8 @@
 package level;
 
 import gui.GamePanel;
+import model.GameState;
+import tile.Base;
 import tile.Bush;
 import tile.EmptyTile;
 import tile.Tile;
@@ -109,6 +111,22 @@ public class Level {
 		return true;
 	}
 
+	public boolean isbaseDestroyed()
+	{
+		for(int row = 0; row < GamePanel.MAP_ROWS; row++)
+		{
+			for(int col = 0; col < GamePanel.MAP_COLS; col++)
+			{
+				if(tiles[row][col] instanceof Base)
+				{
+					if(tiles[row][col].getisHitted() == true)
+					{
+						return true;
+					}
+						
+				}
+			}	
+		}
+		return false;
+	}
 }
-
-

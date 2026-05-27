@@ -14,7 +14,7 @@ public class contentPanel extends JPanel {
 	public contentPanel()
 	{
         setLayout(new BorderLayout(10, 0)); // GamePanel ile SidePanel arası 10 px
-        setBackground(Color.GRAY);
+        setBackground(Color.decode("#636363"));
         setBorder(new EmptyBorder(10, 10, 10, 10)); // top, left, bottom, right
 	}
 

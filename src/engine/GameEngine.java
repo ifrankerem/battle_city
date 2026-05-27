@@ -8,11 +8,12 @@ import entity.EnemyTankPink;
 import entity.EnemyTankWhite;
 import level.Level;
 import model.Direction;
-import util.Explosion;
+import model.Explosion;
+import model.GameState;
+import model.Spawn;
+import model.TankExplosion;
 import util.ImageLoader;
-import util.Spawn;
-import util.TankExplosion;
-
+import model.GameObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import entity.Tank;
@@ -34,11 +35,11 @@ public class GameEngine {
 	private ArrayList <TankExplosion> tankExplosions;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
-	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
+	private static int maxEnemy = 20; //TODO DO 20 AT THE END OF DEVELOPMENT
 	private int score;
 	private static int active_enemy_nbr = 0;
 	private static int player_max_health = 3;
-	private static boolean isGameOver = false;
+	private GameState gameState;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -55,11 +56,14 @@ public class GameEngine {
 		this.levels = levels;
 		this.currentLevelindex = 13;
 		this.score = 0;
+		this.gameState = GameState.MENU;
 	}
 
 
 	public void enemySpawn()
 	{	
+		if(active_enemy_nbr == 0 && maxEnemy == 0)
+			this.gameState = GameState.LEVEL_COMPLETE;
 		while(active_enemy_nbr < 3 && active_enemy_nbr >= 0)
 		{
 			int random = (int)(Math.random() * 3);
@@ -86,10 +90,10 @@ public class GameEngine {
 
 	public void playerSpawn()
 	{
+		if(player_max_health == 0)
+			this.gameState = GameState.GAME_OVER; //TODO when game is over. UI gonna change
 		if(player_max_health > 0)
 		{
-			if(player_max_health == 0)
-				this.isGameOver = true; //TODO when game is over. UI gonna change
 			spawns.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
 			this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
 		}
@@ -98,6 +102,10 @@ public class GameEngine {
 
 	public void update()
 	{			
+		if(levels[currentLevelindex].isbaseDestroyed())
+			this.gameState = GameState.GAME_OVER;
+		if(maxEnemy == 0 && active_enemy_nbr == 0)
+			this.gameState = GameState.LEVEL_COMPLETE;
 		this.updateSpawn();
 		this.updateTanks();
 		if(maxEnemy != 0)
@@ -224,6 +232,11 @@ public class GameEngine {
 		}
 	}
 
+	public void updateGameState()
+	{
+
+	}
+
 	public void updateTanks()
 	{
 		this.playerBulletCollision();
@@ -288,6 +301,26 @@ public class GameEngine {
 	public Level getCurrentLevel()
 	{
 		return levels[currentLevelindex];
+	}
+
+	public int getMaxEnemy()
+	{
+		return maxEnemy;
+	}
+
+	public int getActiveEnemyCount()
+	{
+		return active_enemy_nbr;
+	}
+
+	public int getCurrentLevelIndex()
+	{
+		return currentLevelindex;
+	}
+
+	public int getPlayerMaxHealth()
+	{
+		return player_max_health;
 	}
 
 	public void draw(Graphics g)
