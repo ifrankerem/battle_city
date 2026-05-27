@@ -45,7 +45,7 @@ abstract public class Tank extends GameObject{
 		int drawX = (int)Math.round(this.x);
 		int drawY = (int)Math.round(this.y);
 		g.drawImage(this.getImage(),drawX,drawY,GamePanel.ENTITY_SIZE,GamePanel.ENTITY_SIZE,null);
-		this.drawHitbox(g);
+		//this.drawHitbox(g);
 		}
 
 	}
