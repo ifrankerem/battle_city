@@ -91,7 +91,7 @@ public class Bullet extends GameObject {
 
 		this.updateHitbox();
 		g.drawImage(this.getImage(),drawX,drawY,GamePanel.BULLET_SIZE,GamePanel.BULLET_SIZE,null);
-		//this.drawHitbox(g);
+		this.drawHitbox(g);
 	}
 
 	public void updateHitbox()
@@ -124,5 +124,10 @@ public class Bullet extends GameObject {
 	public Rectangle getHitbox()
 	{
 		return hitbox;
+	}
+
+	public void setActive(boolean value)
+	{
+		this.active = value;
 	}
 }

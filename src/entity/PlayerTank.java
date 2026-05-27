@@ -65,6 +65,8 @@ public class PlayerTank extends Tank{
 		}
 			if(inputs.space)
 				this.shoot();
+			this.updateHitbox();
+
 
 		}
 

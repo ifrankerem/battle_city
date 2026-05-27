@@ -4,6 +4,7 @@ import entity.PlayerTank;
 import entity.Bullet;
 import entity.EnemyTankBase;
 import entity.EnemyTankGreen;
+import entity.EnemyTankWhite;
 import level.Level;
 import model.Direction;
 import util.Explosion;
@@ -13,6 +14,7 @@ import util.Spawn;
 import java.util.ArrayList;
 import java.util.Iterator;
 import entity.Tank;
+import gui.GamePanel;
 
 public class GameEngine {
 
@@ -26,9 +28,11 @@ public class GameEngine {
 	private ArrayList <Explosion> explosions;
 	private ArrayList <EnemyTankBase> enemytanks;
 	private ArrayList <Spawn> spawns;
-	private static final int[][] EnemyBaseSpawnCords = {{10,15},{1,2},{2,3}};
+	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
-	private int maxEnemy = 20; //TODO
+	private static int maxEnemy = 5; //TODO
+	private int score;
+	private static int active_enemy_nbr = 0;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -42,16 +46,22 @@ public class GameEngine {
 		this.enemySpawn();
 		this.isPaused = false;
 		this.levels = levels;
-		this.currentLevelindex = 5;
+		this.currentLevelindex = 13;
+		this.score = 0;
 	}
 
 
 	public void enemySpawn()
 	{	
-		int random = (int)Math.random() % 3;
-		spawns.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
-		EnemyTankGreen deneme = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.NORTH,iLoader);
-		enemytanks.add(deneme);
+		while(active_enemy_nbr < 3 && active_enemy_nbr >= 0)
+		{
+			int random = (int)(Math.random() * 3);
+			spawns.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
+			EnemyTankWhite deneme = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+			enemytanks.add(deneme);
+			active_enemy_nbr++;
+			maxEnemy--;
+		}
 	}
 
 	public void playerSpawn()
@@ -63,6 +73,9 @@ public class GameEngine {
 	public void update()
 	{			
 		this.updateSpawn();
+		this.updateTanks();
+		if(maxEnemy != 0)
+			this.enemySpawn();
 		player.updateMovement(levels[currentLevelindex],bullets);
 		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
 		while(it_t.hasNext())
@@ -93,6 +106,28 @@ public class GameEngine {
 	}
 
 
+	public void playerBulletCollision()
+	{
+		for(Bullet bullet : bullets)
+		{
+			if(bullet.getActive() && bullet.getOwnerTank() == player)
+			{
+				for(EnemyTankBase curr : enemytanks)
+				{
+					if(bullet.getHitbox().intersects(curr.getHitbox()) && curr.get_isAlive())
+					{
+						curr.getDamage();
+						bullet.setActive(false);
+						score += 200;
+						active_enemy_nbr--;
+						break; // Stop checking this bullet against other enemies
+					}
+				}
+			}
+		}
+	}
+
+
 	public void updateBullets()
 	{
 		if(iManager.get_space())
@@ -117,6 +152,21 @@ public class GameEngine {
 			{
 				explosions.add(new Explosion(bullet.getX(), bullet.getY(), iLoader));
 				it.remove();
+			}
+		}
+	}
+
+	public void updateTanks()
+	{
+		this.playerBulletCollision();
+		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
+		while(it_t.hasNext())
+		{
+			EnemyTankBase enemy = it_t.next();
+			if(enemy.get_isAlive() == false)
+			{
+				explosions.add(new Explosion(enemy.getX(), enemy.getY(), iLoader)); //TODO Different explosion
+				it_t.remove();
 			}
 		}
 	}
@@ -154,7 +204,6 @@ public class GameEngine {
 	public void draw(Graphics g)
 	{
 		levels[currentLevelindex].draw(g);
-		//System.out.println(player.getSpawn());
 		if(player.getSpawn())
 			player.draw(g);
 		Iterator <EnemyTankBase> it_t = enemytanks.iterator();

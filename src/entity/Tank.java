@@ -21,6 +21,7 @@ abstract public class Tank extends GameObject{
 	protected int maxBulletCount;
 	protected int bulletCount;
 	protected boolean isSpawn;
+	protected boolean isAlive;
 
 	public Tank(double x, double y, double speed, Direction dir,ImageLoader iLoader)
 	{
@@ -30,6 +31,7 @@ abstract public class Tank extends GameObject{
 		this.maxBulletCount = 1; //TODO if player gets bonux it will be 2
 		this.bulletCount = 0;
 		this.isSpawn = false;
+		this.isAlive = true;
 	}
 
 	abstract public void updateDraw();
@@ -37,12 +39,15 @@ abstract public class Tank extends GameObject{
 
 	public void draw(Graphics g)
 	{
+		if(this.isAlive == true)
+		{
 		this.updateDraw();
-		this.updateHitbox();
 		int drawX = (int)Math.round(this.x);
 		int drawY = (int)Math.round(this.y);
 		g.drawImage(this.getImage(),drawX,drawY,GamePanel.ENTITY_SIZE,GamePanel.ENTITY_SIZE,null);
 		this.drawHitbox(g);
+		}
+
 	}
 
 	public int countBullets(ArrayList <Bullet> bullets)
@@ -95,5 +100,22 @@ abstract public class Tank extends GameObject{
 	public void setSpawn(boolean value)
 	{
 		this.isSpawn = value;
+	}
+
+	public Rectangle getHitbox()
+	{
+		return hitbox;
+	}
+
+	public void getDamage()
+	{
+		this.health--;
+		if(this.health == 0)
+			this.isAlive = false;
+	}
+
+	public boolean get_isAlive()
+	{
+		return isAlive;
 	}
 }

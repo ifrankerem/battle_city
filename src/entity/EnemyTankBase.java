@@ -80,6 +80,7 @@ public abstract class EnemyTankBase extends Tank{
 					this.SpriteNumber = 1;
 				this.SpriteCounter = 0;
 			}
+			this.updateHitbox();
 		}
 
 
