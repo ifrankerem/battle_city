@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import entity.Tank;
 import gui.GamePanel;
+import gui.contentPanel;
 
 public class GameEngine {
 
@@ -34,6 +35,8 @@ public class GameEngine {
 	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
 	private int score;
 	private static int active_enemy_nbr = 0;
+	private static int player_max_health = 3;
+	private static boolean isGameOver = false;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -80,8 +83,14 @@ public class GameEngine {
 
 	public void playerSpawn()
 	{
-		spawns.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
-		this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
+		if(player_max_health > 0)
+		{
+			if(player_max_health == 0)
+				this.isGameOver = true; //TODO when game is over. UI gonna change
+			spawns.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
+			this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
+		}
+
 	}
 
 	public void update()
@@ -124,7 +133,7 @@ public class GameEngine {
 	{
 		for(Bullet bullet : bullets)
 		{
-			if(bullet.getActive() && bullet.getOwnerTank() == player)
+			if(bullet.getActive() && bullet.getOwnerTank() instanceof PlayerTank)
 			{
 				for(EnemyTankBase curr : enemytanks)
 				{
@@ -139,6 +148,44 @@ public class GameEngine {
 						}
 						break; // Stop checking this bullet against other enemies
 					}
+				}
+			}
+		}
+	}
+
+	public void enemyBulletCollision()
+	{
+		for(Bullet bullet : bullets)
+		{
+			if(bullet.getActive() && bullet.getOwnerTank() instanceof EnemyTankBase)
+			{
+				if(bullet.getHitbox().intersects(player.getHitbox()) && player.get_isAlive())
+				{
+					player.getDamage();
+					bullet.setActive(false);
+					break;
+				}
+			}
+		}
+	}
+
+	public void bulletBulletCollision()
+	{
+		for(int i = 0; i < bullets.size(); i++)
+		{
+			Bullet first = bullets.get(i);
+			if(first.getActive() == false)
+				continue;
+			for(int j = i+1; j < bullets.size(); j++)
+			{
+				Bullet second = bullets.get(j);
+				if(second.getActive() == false)
+					continue;
+				if(first.getHitbox().intersects(second.getHitbox()))
+				{
+					bullets.remove(first);
+					bullets.remove(second);
+					break;
 				}
 			}
 		}
@@ -176,6 +223,8 @@ public class GameEngine {
 	public void updateTanks()
 	{
 		this.playerBulletCollision();
+		this.enemyBulletCollision();
+		this.bulletBulletCollision();
 		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
 		while(it_t.hasNext())
 		{
@@ -185,6 +234,13 @@ public class GameEngine {
 				explosions.add(new Explosion(enemy.getX(), enemy.getY(), iLoader)); //TODO Different explosion
 				it_t.remove();
 			}
+		}
+		if(player.get_isAlive() == false)
+		{
+			explosions.add(new Explosion(player.getX(), player.getY(), iLoader)); //TODO Different explosion
+			this.playerSpawn();
+			player_max_health--;
+			System.out.println(player_max_health);
 		}
 	}
 
