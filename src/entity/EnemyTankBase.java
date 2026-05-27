@@ -23,7 +23,7 @@ public abstract class EnemyTankBase extends Tank{
 	{
 		int random = (int)(Math.random() * 100);
 		if(random < 40)
-			this.dir = Direction.SOUTH; //by %45 chance going down
+			this.dir = Direction.SOUTH; //by %40 chance going down
 		else if(random < 60)
 			this.dir = Direction.NORTH;
 		else if(random < 80)

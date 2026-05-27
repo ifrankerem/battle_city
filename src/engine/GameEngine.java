@@ -43,11 +43,14 @@ public class GameEngine {
 	private ArrayList <FiveHundred> fiveHundreds;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
-	private static int maxEnemy = 20; //TODO DO 20 AT THE END OF DEVELOPMENT
+	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
 	private int score;
 	private static int active_enemy_nbr = 0;
 	private static int player_max_health = 3;
 	private GameState gameState;
+	private static int pinkTanknbr;
+	private static int whiteTanknbr;
+	private static int greenTanknbr;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -83,16 +86,19 @@ public class GameEngine {
 			if(random == 0)
 			{
 				EnemyTankWhite enemy = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				this.whiteTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else if(random == 1)
 			{
 				EnemyTankGreen enemy = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				this.greenTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else
 			{
 				EnemyTankPink enemy = new EnemyTankPink(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				this.pinkTanknbr++;
 				enemytanks.add(enemy);
 			}
 			active_enemy_nbr++;
@@ -471,9 +477,80 @@ public class GameEngine {
 
 	public void drawLevelComplete(Graphics g)
 	{
-		g.drawImage(iLoader.getStageImage(), 100, 100, null);
-		this.drawNumber(g, this.currentLevelindex, 0, 0 ,25, 25);
+		// Draw black background
+		g.setColor(java.awt.Color.BLACK);
+		g.fillRect(0, 0, GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT);
 
+		int digitW = 20;
+		int digitH = 20;
+
+		// 1. TOTAL SCORE
+		g.drawImage(iLoader.getTotalScoreImage(), 170, 50, 150, 37, null);
+		this.drawNumber(g, score, 340, 60, digitW, digitH);
+
+		// 2. STAGE NUMBER
+		int stageW = 117;
+		int stageH = 21;
+		g.drawImage(iLoader.getStageImage(), 220, 120, stageW, stageH, null);
+		this.drawNumber(g, this.currentLevelindex + 1, 220 + stageW + 15, 120, digitW, digitH);
+
+		// 3. TANKS KILLED ROWS
+		int startY = 220;
+		int rowGap = 60;
+		
+		// White tank (500 pts)
+		drawTankKillRow(g, whiteTanknbr, 500, 3, 8, startY);
+		// Green tank (200 pts)
+		drawTankKillRow(g, greenTanknbr, 200, 11, 0, startY + rowGap);
+		// Pink tank (300 pts)
+		drawTankKillRow(g, pinkTanknbr, 300, 10, 8, startY + 2 * rowGap);
+
+		// 4. TOTAL
+		int totalY = startY + 3 * rowGap + 20;
+		
+		// Draw white line above the total count
+		g.setColor(java.awt.Color.WHITE);
+		g.fillRect(250, totalY - 10, 140, 4);
+
+		// Draw TOTAL text image
+		g.drawImage(iLoader.getTotalImage(), 160, totalY, 90, 30, null);
+		
+		// Draw total tanks number (aligned with the counts column)
+		int totalTanks = whiteTanknbr + greenTanknbr + pinkTanknbr;
+		String totalTanksStr = String.valueOf(totalTanks);
+		int totalTanksX = 290 - (totalTanksStr.length() * digitW);
+		this.drawNumber(g, totalTanks, totalTanksX, totalY + 5, digitW, digitH);
+	}
+
+	private void drawTankKillRow(Graphics g, int count, int baseScore, int spriteRow, int spriteCol, int y)
+	{
+		int digitW = 20;
+		int digitH = 20;
+		int ptsValue = count * baseScore;
+		String ptsStr = String.valueOf(ptsValue);
+		String countStr = String.valueOf(count);
+
+		// Calculate X positions to align nicely
+		int ptsNumX = 180 - (ptsStr.length() * digitW); // right aligned
+		int ptsImgX = 190;
+		int countNumX = 290 - (countStr.length() * digitW); // right aligned
+		int arrowX = 300;
+		int tankImgX = 340;
+
+		// Draw Points Value
+		this.drawNumber(g, ptsValue, ptsNumX, y + 10, digitW, digitH);
+
+		// Draw PTS Image
+		g.drawImage(iLoader.getPtsImage(), ptsImgX, y + 5, 60, 30, null);
+
+		// Draw Count Number
+		this.drawNumber(g, count, countNumX, y + 10, digitW, digitH);
+
+		// Draw Arrow Image
+		g.drawImage(iLoader.getArrowImage(), arrowX, y + 15, 30, 15, null);
+
+		// Draw Tank Sprite
+		g.drawImage(iLoader.getEntitySprite2(spriteRow, spriteCol), tankImgX, y, 48, 48, null);
 	}
 
 }

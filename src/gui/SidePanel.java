@@ -125,9 +125,6 @@ public class SidePanel extends JPanel {
 		this.drawNumber(g, lives, numX, startY + iconH + 4, digitW, digitH);
 	}
 
-	/**
-	 * Returns the Y position where the flag section starts (anchored to bottom).
-	 */
 	private int getFlagStartY()
 	{
 		int iconH = 44;
@@ -136,9 +133,6 @@ public class SidePanel extends JPanel {
 		return GamePanel.GAME_HEIGHT - sectionHeight - 20;
 	}
 
-	/**
-	 * Draws the flag section: flag icon with the current level number below it.
-	 */
 	private void drawFlag(Graphics g)
 	{
 		int iconW = 48;

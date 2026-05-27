@@ -33,6 +33,10 @@ public class ImageLoader {
 	private BufferedImage twoHundred;
 	private BufferedImage threeHundred;
 	private BufferedImage fiveHundred;
+	private BufferedImage arrowImage;
+	private BufferedImage ptsImage;
+	private BufferedImage totalImage;
+	private BufferedImage totalScoreImage;
 
 	public ImageLoader()
 	{
@@ -59,6 +63,10 @@ public class ImageLoader {
 		this.oneHundred = loadImage("/resources/images/oneHundred.png");
 		this.twoHundred = loadImage("/resources/images/twoHundred.png");
 		this.threeHundred = loadImage("/resources/images/threeHundred.png");
+		this.arrowImage = loadImage("/resources/images/arrow.png");
+		this.ptsImage = loadImage("/resources/images/pts.png");
+		this.totalImage = loadImage("/resources/images/total.png");
+		this.totalScoreImage = loadImage("/resources/images/total_score.png");
 	}
 
 	
@@ -192,5 +200,21 @@ public class ImageLoader {
 
 	public BufferedImage getOneHundred() {
 		return oneHundred;
+	}
+
+	public BufferedImage getArrowImage() {
+		return arrowImage;
+	}
+
+	public BufferedImage getPtsImage() {
+		return ptsImage;
+	}
+
+	public BufferedImage getTotalImage() {
+		return totalImage;
+	}
+
+	public BufferedImage getTotalScoreImage() {
+		return totalScoreImage;
 	}
 }
