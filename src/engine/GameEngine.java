@@ -4,6 +4,7 @@ import entity.PlayerTank;
 import entity.Bullet;
 import entity.EnemyTankBase;
 import entity.EnemyTankGreen;
+import entity.EnemyTankPink;
 import entity.EnemyTankWhite;
 import level.Level;
 import model.Direction;
@@ -30,7 +31,7 @@ public class GameEngine {
 	private ArrayList <Spawn> spawns;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
-	private static int maxEnemy = 5; //TODO
+	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
 	private int score;
 	private static int active_enemy_nbr = 0;
 
@@ -57,8 +58,21 @@ public class GameEngine {
 		{
 			int random = (int)(Math.random() * 3);
 			spawns.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
-			EnemyTankWhite deneme = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-			enemytanks.add(deneme);
+			if(random == 0)
+			{
+				EnemyTankWhite enemy = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				enemytanks.add(enemy);
+			}
+			else if(random == 1)
+			{
+				EnemyTankGreen enemy = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				enemytanks.add(enemy);
+			}
+			else
+			{
+				EnemyTankPink enemy = new EnemyTankPink(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				enemytanks.add(enemy);
+			}
 			active_enemy_nbr++;
 			maxEnemy--;
 		}
@@ -118,8 +132,11 @@ public class GameEngine {
 					{
 						curr.getDamage();
 						bullet.setActive(false);
-						score += 200;
-						active_enemy_nbr--;
+						if(curr.get_isAlive() == false)
+						{
+							score += 200;
+							active_enemy_nbr--;
+						}
 						break; // Stop checking this bullet against other enemies
 					}
 				}
