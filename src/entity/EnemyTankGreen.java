@@ -9,6 +9,7 @@ public class EnemyTankGreen extends EnemyTankBase{
 	{
 		super(x, y, speed, dir, iLoader);
 		this.health = 1;
+		this.score = 200;
 	}
 
 

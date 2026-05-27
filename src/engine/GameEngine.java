@@ -10,8 +10,10 @@ import level.Level;
 import model.Direction;
 import model.Explosion;
 import model.GameState;
+import model.OneHundred;
 import model.Spawn;
 import model.TankExplosion;
+import model.ThreeHundred;
 import util.ImageLoader;
 import model.GameObject;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import java.util.Iterator;
 import entity.Tank;
 import gui.GamePanel;
 import gui.contentPanel;
+import model.TwoHundred;
+import model.FiveHundred;
 
 public class GameEngine {
 
@@ -33,6 +37,10 @@ public class GameEngine {
 	private ArrayList <EnemyTankBase> enemytanks;
 	private ArrayList <Spawn> spawns;
 	private ArrayList <TankExplosion> tankExplosions;
+	private ArrayList <OneHundred> oneHundreds;
+	private ArrayList <TwoHundred> twoHundreds;
+	private ArrayList <ThreeHundred> threeHundreds;
+	private ArrayList <FiveHundred> fiveHundreds;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
 	private static int maxEnemy = 20; //TODO DO 20 AT THE END OF DEVELOPMENT
@@ -49,12 +57,16 @@ public class GameEngine {
 		this.explosions = new ArrayList<Explosion>();
 		this.tankExplosions = new ArrayList<TankExplosion>();
 		this.spawns = new ArrayList<Spawn>();
+		this.oneHundreds = new ArrayList<OneHundred>();
+		this.twoHundreds = new ArrayList<TwoHundred>();
+		this.threeHundreds = new ArrayList<ThreeHundred>();
+		this.fiveHundreds = new ArrayList<FiveHundred>();
 		this.playerSpawn();
 		this.enemytanks = new ArrayList<EnemyTankBase>();
 		this.enemySpawn();
 		this.isPaused = false;
 		this.levels = levels;
-		this.currentLevelindex = 13;
+		this.currentLevelindex = 5;
 		this.score = 0;
 		this.gameState = GameState.MENU;
 	}
@@ -120,6 +132,10 @@ public class GameEngine {
 			it.next().updateMovement(levels[currentLevelindex]);
 		this.updateExplosions();
 		this.updateTankExplosions();
+		this.updateOneHundred();
+		this.updateTwoHundred();
+		this.updateThreeHundred();
+		this.updateFiveHundred();
 	}
 
 	public void updateSpawn()
@@ -155,7 +171,7 @@ public class GameEngine {
 						bullet.setActive(false);
 						if(curr.get_isAlive() == false)
 						{
-							score += 200;
+							score += curr.getScore();
 							active_enemy_nbr--;
 						}
 						break; // Stop checking this bullet against other enemies
@@ -232,10 +248,6 @@ public class GameEngine {
 		}
 	}
 
-	public void updateGameState()
-	{
-
-	}
 
 	public void updateTanks()
 	{
@@ -249,6 +261,12 @@ public class GameEngine {
 			if(enemy.get_isAlive() == false)
 			{
 				tankExplosions.add(new TankExplosion(enemy.getX(), enemy.getY(), iLoader));
+				if(enemy instanceof EnemyTankGreen)
+					oneHundreds.add(new OneHundred(enemy.getX(), enemy.getY(), iLoader));
+				else if(enemy instanceof EnemyTankPink)
+					twoHundreds.add(new TwoHundred(enemy.getX(), enemy.getY(), iLoader));
+				else if(enemy instanceof EnemyTankWhite)
+					threeHundreds.add(new ThreeHundred(enemy.getX(), enemy.getY(), iLoader));
 				it_t.remove();
 			}
 		}
@@ -285,9 +303,57 @@ public class GameEngine {
 		}
 	}
 
+	public void updateOneHundred()
+	{
+		Iterator <OneHundred> it = oneHundreds.iterator();
+		while(it.hasNext())
+		{
+			OneHundred oneHundred = it.next();
+			oneHundred.update();
+			if(!oneHundred.isActive())
+				it.remove();
+		}
+	}
+	
+	public void updateTwoHundred()
+	{
+		Iterator <TwoHundred> it = twoHundreds.iterator();
+		while(it.hasNext())
+		{
+			TwoHundred twoHundred = it.next();
+			twoHundred.update();
+			if(!twoHundred.isActive())
+				it.remove();
+		}
+	}
+
+	public void updateFiveHundred()
+	{
+		Iterator <FiveHundred> it = fiveHundreds.iterator();
+		while(it.hasNext())
+		{
+			FiveHundred fiveHundred = it.next();
+			fiveHundred.update();
+			if(!fiveHundred.isActive())
+				it.remove();
+		}
+	}
+	public void updateThreeHundred()
+	{
+		Iterator <ThreeHundred> it = threeHundreds.iterator();
+		while(it.hasNext())
+		{
+			ThreeHundred threeHundred = it.next();
+			threeHundred.update();
+			if(!threeHundred.isActive())
+				it.remove();
+		}
+	}
+
+
 	public boolean get_isPaused()
 	{
-		return(isPaused);
+		return(gameState == GameState.PAUSED);
 	}
 	public PlayerTank getPlayer()
 	{
@@ -325,6 +391,12 @@ public class GameEngine {
 
 	public void draw(Graphics g)
 	{
+		if(this.gameState == GameState.GAME_OVER)
+			this.drawOver(g);
+		else if(this.gameState == GameState.PAUSED)
+			this.drawPause(g);
+		if(this.gameState == GameState.LEVEL_COMPLETE)
+			this.drawLevelComplete(g);
 		levels[currentLevelindex].draw(g);
 		if(player.getSpawn())
 			player.draw(g);
@@ -347,7 +419,61 @@ public class GameEngine {
 		Iterator <TankExplosion> tit = tankExplosions.iterator();
 		while(tit.hasNext())
 			tit.next().draw(g);
+		this.drawHundred(g);
 		levels[currentLevelindex].topdraw(g);
+	}
+
+	public void drawHundred(Graphics g)
+	{
+		Iterator <OneHundred> iterator = oneHundreds.iterator();
+		while(iterator.hasNext())
+			iterator.next().draw(g);	
+		Iterator <TwoHundred> iterator2 = twoHundreds.iterator();
+		while(iterator2.hasNext())
+			iterator2.next().draw(g);	
+		Iterator <ThreeHundred> iterator3 = threeHundreds.iterator();
+		while(iterator3.hasNext())
+			iterator3.next().draw(g);	
+		Iterator <FiveHundred> iterator4 = fiveHundreds.iterator();
+		while(iterator4.hasNext())
+			iterator4.next().draw(g);	
+
+	}
+
+	public void togglePause()
+	{
+		if(this.gameState == GameState.PAUSED)
+			this.gameState = GameState.PLAYING;
+		else if(this.gameState == GameState.PLAYING)
+			this.gameState = GameState.PAUSED;
+	}
+
+	public void drawOver(Graphics g)
+	{
+
+	}
+
+	public void drawPause(Graphics g)
+	{
+
+	}
+
+	private void drawNumber(Graphics g, int number, int x, int y, int digitW, int digitH)
+	{
+		String text = String.valueOf(number);
+
+		for (int i = 0; i < text.length(); i++)
+		{
+			int digit = text.charAt(i) - '0';
+			g.drawImage(iLoader.getDigit(digit), x + i * digitW, y, digitW, digitH, null);
+		}
+	}
+
+	public void drawLevelComplete(Graphics g)
+	{
+		g.drawImage(iLoader.getStageImage(), 100, 100, null);
+		this.drawNumber(g, this.currentLevelindex, 0, 0 ,25, 25);
+
 	}
 
 }

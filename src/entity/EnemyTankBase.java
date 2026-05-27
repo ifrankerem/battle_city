@@ -10,6 +10,7 @@ import level.Level;
 public abstract class EnemyTankBase extends Tank{
 
 	protected int directionCounter;
+	protected int score;
 	public EnemyTankBase(double x, double y, double speed, Direction dir,ImageLoader iLoader)
 	{
 		super(x, y, speed, dir, iLoader);
@@ -42,11 +43,9 @@ public abstract class EnemyTankBase extends Tank{
 		}
 	}
 
-	public void updateBullets()
-	{
-
+	public int getScore() {
+		return score;
 	}
-
 
 	public void updateMovement(Level currentLevel,ArrayList <Bullet> bullets)
 	{

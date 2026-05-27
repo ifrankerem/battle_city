@@ -30,8 +30,11 @@ public class GameLoop implements Runnable{
 		//int frameCounter = 0;
 		while(game != null)
 		{
-			engine.update();
-			engine.getCurrentLevel().updateAnimation();
+			if(!engine.get_isPaused())
+			{
+				engine.update();
+				engine.getCurrentLevel().updateAnimation();
+			}
 			gamePanel.repaint();
 			sidePanel.repaint();
 			// frameCounter++;

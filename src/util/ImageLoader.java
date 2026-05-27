@@ -27,6 +27,12 @@ public class ImageLoader {
 	private BufferedImage flagImage;
 	private BufferedImage playerHealthImage;
 	private BufferedImage digits_text;
+	private BufferedImage pauseImage;
+	private BufferedImage stageImage;
+	private BufferedImage oneHundred;
+	private BufferedImage twoHundred;
+	private BufferedImage threeHundred;
+	private BufferedImage fiveHundred;
 
 	public ImageLoader()
 	{
@@ -46,7 +52,13 @@ public class ImageLoader {
 		this.enemyCounterImage = loadImage("/resources/images/enemy_counter.png");
 		this.flagImage = loadImage("/resources/images/flag.png");
 		this.playerHealthImage = loadImage("/resources/images/player_health.png");
+		this.pauseImage = loadImage("/resources/images/pause.png");
 		this.loadDigits();
+		this.stageImage = loadImage("/resources/images/stage_text.png");
+		this.fiveHundred = loadImage("/resources/images/fiveHundred.png");
+		this.oneHundred = loadImage("/resources/images/oneHundred.png");
+		this.twoHundred = loadImage("/resources/images/twoHundred.png");
+		this.threeHundred = loadImage("/resources/images/threeHundred.png");
 	}
 
 	
@@ -159,5 +171,26 @@ public class ImageLoader {
 		return digits[index];
 	}
 
+	public BufferedImage getPauseImage() {
+		return pauseImage;
+	}
+	public BufferedImage getStageImage() {
+		return stageImage;
+	}
 
+	public BufferedImage getTwoHundred() {
+		return twoHundred;
+	}
+
+	public BufferedImage getThreeHundred() {
+		return threeHundred;
+	}
+
+	public BufferedImage getFiveHundred() {
+		return fiveHundred;
+	}
+
+	public BufferedImage getOneHundred() {
+		return oneHundred;
+	}
 }

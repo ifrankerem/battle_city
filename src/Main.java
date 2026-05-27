@@ -24,7 +24,7 @@ public class Main {
 		contentPanel contentP = new contentPanel();
 		GamePanel gameWindow = new GamePanel(engine);
 		contentP.add(gameWindow,BorderLayout.CENTER);
-		SidePanel sidePanelWindow = new SidePanel(engine,iLoader);
+		SidePanel sidePanelWindow = new SidePanel(engine,iLoader,gameWindow);
 		contentP.add(sidePanelWindow,BorderLayout.EAST);
 		windowMain.add(contentP);
 		windowMain.pack(); //auto setSize according to that ı gave windows
