@@ -18,6 +18,7 @@ abstract public class Tank extends GameObject{
 	protected Bullet bullet;
 	protected int maxBulletCount;
 	protected int bulletCount;
+	protected int bulletSpeedBonus;
 	protected boolean isSpawn;
 	protected boolean isAlive;
 
@@ -28,6 +29,7 @@ abstract public class Tank extends GameObject{
 		this.speed = speed;
 		this.maxBulletCount = 1; //TODO if player gets bonux it will be 2
 		this.bulletCount = 0;
+		this.bulletSpeedBonus = 0;
 		this.isSpawn = false;
 		this.isAlive = true;
 	}
@@ -79,6 +81,8 @@ abstract public class Tank extends GameObject{
 	public void shoot()
 	{
 		this.bullet = new Bullet(this.x + 13, this.y + 13, iLoader, this);
+		if(this.bulletSpeedBonus > 0)
+			this.bullet.incrementSpeed(this.bulletSpeedBonus);
 	}
 
 
@@ -119,5 +123,14 @@ abstract public class Tank extends GameObject{
 
 	public int getHealth() {
 		return health;
+	}
+
+	public void incrementBulletSpeed(int value)
+	{
+		this.bulletSpeedBonus += value;
+	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
 	}
 }

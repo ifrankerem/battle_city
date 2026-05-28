@@ -4,13 +4,13 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import util.ImageLoader;
 
-public class AnimatedModel extends GameObject {
+public abstract class AnimatedModel extends GameObject {
 
 	protected BufferedImage[] frames;
 	protected int frameIndex;
-	protected int frameCounter;
+	protected int frameCounter; //lifespan on screen !
 	protected boolean active;
-	protected int FRAME_DELAY = 8;
+	protected int FRAME_DELAY;
 	protected int size;
 	protected int drawX;
 	protected int drawY;

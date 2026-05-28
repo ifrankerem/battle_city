@@ -2,8 +2,10 @@ package level;
 
 import gui.GamePanel;
 import tile.Base;
+import tile.BrickWall;
 import tile.Bush;
 import tile.EmptyTile;
+import tile.SteelWall;
 import tile.Tile;
 import tile.Water;
 
@@ -13,6 +15,7 @@ import java.awt.Graphics;
 public class Level {
 
 	private Tile[][] tiles;
+	int[][] baseWallPositions = {{23, 11}, {23, 12}, {23, 13}, {23, 14},{24, 11},{24, 14},{25, 11},{25, 14}};
 
 	public Level(Tile[][] tiles)
 	{
@@ -127,5 +130,39 @@ public class Level {
 			}	
 		}
 		return false;
+	}
+
+	public void updateSteel()
+	{
+		for(int row = 0; row < GamePanel.MAP_ROWS; row++)
+		{
+			for(int col = 0; col < GamePanel.MAP_COLS; col++)
+			{
+				if(tiles[row][col] instanceof SteelWall)
+					tiles[row][col].setDestroyable(true);
+			}	
+		}
+	}
+
+	public void baseProtection(boolean value)
+	{
+		if(value == true)
+		{
+			for(int i = 0; i < 8 ; i++)
+			{
+				int row = baseWallPositions[i][0];
+				int col = baseWallPositions[i][1];
+				tiles[row][col] = new SteelWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, tiles[row][col].getImageLoader()); 
+			}
+		}
+		else 
+		{
+			for(int i = 0; i < 8 ; i++)
+			{
+				int row = baseWallPositions[i][0];
+				int col = baseWallPositions[i][1];
+				tiles[row][col] = new BrickWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, tiles[row][col].getImageLoader()); 
+			}
+		}
 	}
 }

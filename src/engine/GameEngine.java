@@ -9,6 +9,7 @@ import entity.EnemyTankWhite;
 import level.Level;
 import model.AnimatedModel;
 import model.BulletExplosion;
+import model.Explosion;
 import model.OneHundred;
 import model.Spawn;
 import model.TankExplosion;
@@ -20,6 +21,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import gui.GamePanel;
 import model.TwoHundred;
+import powerup.BombPowerUp;
+import powerup.ClockPowerUp;
+import powerup.PowerUp;
+import powerup.ShieldPowerUp;
+import powerup.ShovelPowerUp;
+import powerup.StarPowerUp;
+import powerup.TankPowerUp;
+import powerup.TimedPowerUps;
 import model.Model;
 import java.awt.Color;
 
@@ -34,9 +43,11 @@ public class GameEngine {
 	private ArrayList <EnemyTankBase> enemytanks;
 	private ArrayList <AnimatedModel> animatedModels;
 	private ArrayList <Model> models;
+	private ArrayList<PowerUp> powerUps;
+	private ArrayList<TimedPowerUps> activeEffects;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
-	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
+	private static int maxEnemy = 20; // Changed to 20 to trigger powerups at 13 and 7
 	private int score;
 	private static int active_enemy_nbr = 0;
 	private static int player_max_health = 3;
@@ -44,6 +55,11 @@ public class GameEngine {
 	private static int pinkTanknbr;
 	private static int whiteTanknbr;
 	private static int greenTanknbr;
+	private boolean isFrozen;
+	private boolean isInvincible;
+	private boolean powerUp13Spawned = false;
+	private boolean powerUp7Spawned = false;
+	private static int powerUpStarMax = 3;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -52,6 +68,8 @@ public class GameEngine {
 		this.animatedModels = new ArrayList<AnimatedModel>();
 		this.models = new ArrayList<Model>();
 		this.bullets = new ArrayList<Bullet>();
+		this.powerUps = new ArrayList<PowerUp>();
+		this.activeEffects = new ArrayList<TimedPowerUps>();
 		this.playerSpawn();
 		this.enemytanks = new ArrayList<EnemyTankBase>();
 		this.enemySpawn();
@@ -66,26 +84,26 @@ public class GameEngine {
 	{	
 		if(active_enemy_nbr == 0 && maxEnemy == 0)
 			this.gameState = GameState.LEVEL_COMPLETE;
-		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0)
+		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0 && maxEnemy > 0)
 		{
 			int random = (int)(Math.random() * 3);
 			animatedModels.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
 			if(random == 0)
 			{
 				EnemyTankWhite enemy = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-				whiteTanknbr++;
+				this.whiteTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else if(random == 1)
 			{
 				EnemyTankGreen enemy = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-				greenTanknbr++;
+				this.greenTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else
 			{
 				EnemyTankPink enemy = new EnemyTankPink(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-				pinkTanknbr++;
+				this.pinkTanknbr++;
 				enemytanks.add(enemy);
 			}
 			active_enemy_nbr++;
@@ -116,19 +134,30 @@ public class GameEngine {
 
 		if(this.gameState == GameState.PLAYING)
 		{
-			this.updateAnimatedModels();
 			this.updateModels();
+			this.updatePowerUps(); // Call updatePowerUps here
+			this.updateActiveEffects(); // Decrement timed powerup timers
 			this.updateTanks();
+			this.playerPowerUpCollision();
+			this.ManagePowerUps();
 			if(maxEnemy != 0)
 				this.enemySpawn();
-			player.updateMovement(levels[currentLevelindex],bullets);
-			Iterator <EnemyTankBase> it_t = enemytanks.iterator();
-			while(it_t.hasNext())
-				it_t.next().updateMovement(levels[currentLevelindex],bullets);
+				player.updateMovement(levels[currentLevelindex],bullets);
+				if(this.isFrozen == false)
+				{
+					Iterator <EnemyTankBase> it_t = enemytanks.iterator();
+					while(it_t.hasNext())
+					{
+						EnemyTankBase enemy = it_t.next();
+						if(enemy.get_isAlive())
+							enemy.updateMovement(levels[currentLevelindex],bullets);
+					}
+				}
 			this.updateBullets();
 			Iterator <Bullet> it = bullets.iterator();
 			while(it.hasNext())
 				it.next().updateMovement(levels[currentLevelindex]);
+			this.updateAnimatedModels();
 		}
 	}
 
@@ -141,19 +170,19 @@ public class GameEngine {
 			{
 				for(EnemyTankBase curr : enemytanks)
 				{
-					if(bullet.getHitbox().intersects(curr.getHitbox()) && curr.get_isAlive())
-					{
-						curr.getDamage();
-						bullet.setActive(false);
-						if(curr.get_isAlive() == false)
+						if(bullet.getHitbox().intersects(curr.getHitbox()) && curr.get_isAlive())
 						{
-							score += curr.getScore();
-							active_enemy_nbr--;
+							curr.getDamage();
+							bullet.setActive(false);
+							if(curr.get_isAlive() == false)
+							{
+								score += curr.getScore();
+								active_enemy_nbr--;
+							}
+							break; // Stop checking this bullet against other enemies
 						}
-						break; // Stop checking this bullet against other enemies
 					}
 				}
-			}
 		}
 	}
 
@@ -165,7 +194,8 @@ public class GameEngine {
 			{
 				if(bullet.getHitbox().intersects(player.getHitbox()) && player.get_isAlive())
 				{
-					player.getDamage();
+					if(isInvincible == false)
+						player.getDamage();
 					bullet.setActive(false);
 					break;
 				}
@@ -197,8 +227,111 @@ public class GameEngine {
 
 	public void playerPowerUpCollision()
 	{
-
+		Iterator<PowerUp> it = powerUps.iterator();
+		while(it.hasNext())
+		{
+			PowerUp powerUp = it.next();
+			if(!powerUp.getActive())
+				continue;
+			if(powerUp.getHitbox().intersects(player.getHitbox()))
+			{
+				if(powerUp instanceof TimedPowerUps) {
+					TimedPowerUps timedPowerUp = (TimedPowerUps)powerUp;
+					Iterator<TimedPowerUps> effectIt = activeEffects.iterator();
+					while(effectIt.hasNext())
+					{
+						TimedPowerUps activeEffect = effectIt.next();
+						if(activeEffect.getClass() == timedPowerUp.getClass())
+							effectIt.remove();
+					}
+					timedPowerUp.activateEffect(this);
+					activeEffects.add(timedPowerUp);
+				}
+				else {
+					powerUp.action(this);
+				}
+				it.remove();
+				break;
+			}
+		}
 	}
+
+	public void updateActiveEffects()
+	{
+		Iterator<TimedPowerUps> it = activeEffects.iterator();
+		while (it.hasNext()) {
+			TimedPowerUps effect = it.next();
+			if (effect.updateEffect(this)) {
+				it.remove();
+			}
+		}
+	}
+
+	public void setFrozen(boolean value)
+	{
+		this.isFrozen = value;
+	}
+	
+
+	public void setInvincible(boolean isInvincible) {
+		this.isInvincible = isInvincible;
+	}
+
+
+
+	public void ManagePowerUps()
+	{
+		int remainingEnemies = maxEnemy + active_enemy_nbr;
+		if(remainingEnemies == 13 && !powerUp13Spawned)
+		{
+			if(Math.random() < 0.5)
+				spawnPowerUps();
+			powerUp13Spawned = true;
+		}
+		else if(remainingEnemies == 7 && !powerUp7Spawned)
+		{
+			if(Math.random() < 0.5)
+				spawnPowerUps();
+			powerUp7Spawned = true;
+		}
+	}
+
+	public void spawnPowerUps()
+	{
+		int spawnRate = (int)(Math.random() * 100);
+		// Spawn inside the visible game area
+		int randomX = (int)(Math.random() * (GamePanel.GAME_WIDTH - 60)) + 30;
+		int randomY = (int)(Math.random() * (GamePanel.GAME_HEIGHT - 60)) + 30;
+		if(spawnRate <= 16)
+			powerUps.add(new ClockPowerUp(randomX, randomY, iLoader));
+		else if(spawnRate <= 32)
+			powerUps.add(new BombPowerUp(randomX, randomY, iLoader));
+		else if(spawnRate <= 48)
+			powerUps.add(new ShieldPowerUp(randomX, randomY, iLoader));
+		else if(spawnRate <= 64)
+			powerUps.add(new ShovelPowerUp(randomX, randomY, iLoader));
+		else if(spawnRate <= 80) 
+			powerUps.add(new TankPowerUp(randomX, randomY, iLoader));
+		else if(powerUpStarMax <= 3 && powerUpStarMax > 0)
+		{
+			powerUpStarMax--;
+			powerUps.add(new StarPowerUp(randomX, randomY, iLoader));
+
+		}
+	}
+
+	public void updatePowerUps()
+	{
+		Iterator<PowerUp> it = powerUps.iterator();
+		while (it.hasNext()) {
+			PowerUp powerUp = it.next();
+			powerUp.update();
+			if (!powerUp.getActive()) {
+				it.remove();
+			}
+		}
+	}
+
 
 
 	public void updateBullets()
@@ -206,15 +339,17 @@ public class GameEngine {
 		if(iManager.get_space())
 		{
 			Bullet playerBullet = player.getBullet();
-			if(playerBullet != null && !bullets.contains(playerBullet) && player.countBullets(bullets) < player.getMaxBulletCount())
+			if(playerBullet != null && playerBullet.getActive() && !bullets.contains(playerBullet) && player.countBullets(bullets) < player.getMaxBulletCount())
 				bullets.add(playerBullet);
 		}
 		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
 		while(it_t.hasNext())
 		{
 			EnemyTankBase enemy = it_t.next();
+			if(!enemy.get_isAlive())
+				continue;
 			Bullet enemyBullet = enemy.getBullet();
-			if(enemyBullet != null && !bullets.contains(enemyBullet) && enemy.countBullets(bullets) < enemy.getMaxBulletCount())
+			if(enemyBullet != null && enemyBullet.getActive() && !bullets.contains(enemyBullet) && enemy.countBullets(bullets) < enemy.getMaxBulletCount())
 				bullets.add(enemyBullet);
 		}
 		Iterator <Bullet> it = bullets.iterator();
@@ -286,7 +421,7 @@ public class GameEngine {
 		{
 			Model model = it.next();
 			model.update();
-			if(!model.isActive())
+			if(!model.getActive())
 				it.remove();
 		}
 	}
@@ -329,6 +464,21 @@ public class GameEngine {
 		return player_max_health;
 	}
 
+	public void incrementPlayerMaxHealth()
+	{
+		player_max_health++;
+	}
+
+	public void incrementScore(int value)
+	{
+		score += value;
+	}
+
+	public void decrementActiveEnemyCount()
+	{
+		active_enemy_nbr--;
+	}
+
 	public void draw(Graphics g)
 	{
 		if(this.gameState == GameState.GAME_OVER)
@@ -358,9 +508,11 @@ public class GameEngine {
 			Iterator <Model> hit = models.iterator();
 			while(hit.hasNext())
 				hit.next().draw(g);
+			Iterator <PowerUp> pit = powerUps.iterator();
+			while(pit.hasNext())
+				pit.next().draw(g);
 			levels[currentLevelindex].topdraw(g);
 		}
-
 	}
 
 	public void togglePause()
@@ -453,6 +605,13 @@ public class GameEngine {
 
 	}
 
+	public ArrayList<Bullet> getBullets() {
+		return bullets;
+	}
+
+	public ArrayList<EnemyTankBase> getEnemytanks() {
+		return enemytanks;
+	}
 
 
 	private void drawTankKillRow(Graphics g, int count, int baseScore, int spriteRow, int spriteCol, int y)

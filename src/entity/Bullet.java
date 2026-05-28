@@ -13,7 +13,6 @@ import level.Level;
 
 public class Bullet extends GameObject {
 
-
 	private Direction dir;
 	private int speed;
 	private Tank ownerTank;
@@ -126,5 +125,10 @@ public class Bullet extends GameObject {
 	public void setActive(boolean value)
 	{
 		this.active = value;
+	}
+
+	public void incrementSpeed(int value)
+	{
+		this.speed += value; 
 	}
 }

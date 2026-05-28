@@ -11,11 +11,13 @@ public abstract class EnemyTankBase extends Tank{
 
 	protected int directionCounter;
 	protected int score;
+	protected boolean canMove;
 	public EnemyTankBase(double x, double y, double speed, Direction dir,ImageLoader iLoader)
 	{
 		super(x, y, speed, dir, iLoader);
 		this.health = 1;
 		this.directionCounter = 0;
+		this.canMove = true;
 	}
 
 
@@ -49,7 +51,7 @@ public abstract class EnemyTankBase extends Tank{
 
 	public void updateMovement(Level currentLevel,ArrayList <Bullet> bullets)
 	{
-		if(this.isSpawn)
+		if(this.isSpawn && this.canMove)
 		{
 			double nextX = x;
 			double nextY = y;
@@ -81,8 +83,10 @@ public abstract class EnemyTankBase extends Tank{
 			}
 			this.updateHitbox();
 		}
+	}
 
-
+	public void setCanMove(boolean canMove) {
+		this.canMove = canMove;
 	}
 
 }

@@ -83,6 +83,15 @@ abstract public class Tile extends GameObject {
 	{
 		return isHitted;
 	}
+	
+	public void setDestroyable(boolean isDestroyable) {
+		this.isDestroyable = isDestroyable;
+	}
+
+	public void turnSteel()
+	{
+		
+	}
 
 	
 }

@@ -110,6 +110,16 @@ public class PlayerTank extends Tank{
 		}
 	}
 
+	public void incrementHealth()
+	{
+		this.health++;
+	}
+
+	public void incrementMaxBullets()
+	{
+		this.maxBulletCount++;
+	}
+
 
 
 	

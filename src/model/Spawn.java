@@ -21,6 +21,7 @@ public class Spawn extends AnimatedModel{
 		this.drawX = (int)Math.round(x);
 		this.drawY = (int)Math.round(y);
 		this.size = GamePanel.ENTITY_SIZE + 10;
+		this.FRAME_DELAY = 20;
 		
 	}
 }
