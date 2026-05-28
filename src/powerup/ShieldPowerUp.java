@@ -5,9 +5,10 @@ import util.ImageLoader;
 
 public class ShieldPowerUp extends TimedPowerUps {
 
-	public ShieldPowerUp(double x, double y,ImageLoader iLoader)
+	public ShieldPowerUp(double x, double y,ImageLoader iLoader,int time)
 	{
 		super(x, y, iLoader);
+		this.effectDuration = time;
 		this.frame = iLoader.getEntitySprite(7, 21);
 	}
 

@@ -1,0 +1,4 @@
+space için bir cooldown birden kez fazla basması için
+gameover retry isim sorma csv kaydetme
+main MENU ekranı
+stage load ekranı

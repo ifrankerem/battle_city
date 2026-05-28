@@ -6,9 +6,12 @@ import util.ImageLoader;
 
 public class Spawn extends AnimatedModel{
 
-	public Spawn(double x, double y, ImageLoader iLoader)
+	private boolean playerSpawn;
+
+	public Spawn(double x, double y, ImageLoader iLoader, boolean playerSpawn)
 	{
 		super(x, y, iLoader);
+		this.playerSpawn = playerSpawn;
 		this.active = true;
 		this.frameIndex = 0;
 		this.frameCounter = 0;
@@ -23,5 +26,10 @@ public class Spawn extends AnimatedModel{
 		this.size = GamePanel.ENTITY_SIZE + 10;
 		this.FRAME_DELAY = 20;
 		
+	}
+
+	public boolean isPlayerSpawn()
+	{
+		return playerSpawn;
 	}
 }

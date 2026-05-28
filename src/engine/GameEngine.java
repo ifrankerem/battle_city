@@ -11,6 +11,7 @@ import model.AnimatedModel;
 import model.BulletExplosion;
 import model.Explosion;
 import model.FiveHundred;
+import model.InvincibleModel;
 import model.Spawn;
 import model.TankExplosion;
 import model.ThreeHundred;
@@ -87,7 +88,7 @@ public class GameEngine {
 		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0 && maxEnemy > 0)
 		{
 			int random = (int)(Math.random() * 3);
-			animatedModels.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
+			animatedModels.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader,false));
 			if(random == 0)
 			{
 				EnemyTankWhite enemy = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
@@ -117,7 +118,7 @@ public class GameEngine {
 			this.gameState = GameState.GAME_OVER; //TODO when game is over. UI gonna change
 		if(player_max_health > 0)
 		{
-			animatedModels.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
+			animatedModels.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader, true));
 			this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
 		}
 
@@ -135,8 +136,8 @@ public class GameEngine {
 		if(this.gameState == GameState.PLAYING)
 		{
 			this.updateModels();
-			this.updatePowerUps(); // Call updatePowerUps here
-			this.updateActiveEffects(); // Decrement timed powerup timers
+			this.updatePowerUps();
+			this.updateActiveEffects();
 			this.updateTanks();
 			this.playerPowerUpCollision();
 			this.ManagePowerUps();
@@ -245,6 +246,8 @@ public class GameEngine {
 							effectIt.remove();
 					}
 					timedPowerUp.activateEffect(this);
+					if(timedPowerUp instanceof ShieldPowerUp)
+						animatedModels.add(new InvincibleModel(player.getX(), player.getY(), iLoader,this));
 					activeEffects.add(timedPowerUp);
 				}
 				else {
@@ -262,6 +265,15 @@ public class GameEngine {
 		while (it.hasNext()) {
 			TimedPowerUps effect = it.next();
 			if (effect.updateEffect(this)) {
+				if(effect instanceof ShieldPowerUp)
+				{
+					Iterator<AnimatedModel> iterator = animatedModels.iterator();
+					while(iterator.hasNext())
+					{
+						if(iterator.next() instanceof InvincibleModel)
+							iterator.remove();
+					}
+				}
 				it.remove();
 			}
 		}
@@ -275,6 +287,7 @@ public class GameEngine {
 
 	public void setInvincible(boolean isInvincible) {
 		this.isInvincible = isInvincible;
+
 	}
 
 
@@ -307,7 +320,7 @@ public class GameEngine {
 		else if(spawnRate <= 32)
 			powerUps.add(new BombPowerUp(randomX, randomY, iLoader));
 		else if(spawnRate <= 48)
-			powerUps.add(new ShieldPowerUp(randomX, randomY, iLoader));
+			powerUps.add(new ShieldPowerUp(randomX, randomY, iLoader,1800));
 		else if(spawnRate <= 64)
 			powerUps.add(new ShovelPowerUp(randomX, randomY, iLoader));
 		else if(spawnRate <= 80) 
@@ -396,6 +409,7 @@ public class GameEngine {
 
 	public void updateAnimatedModels()
 	{
+		AnimatedModel pendingAnimatedModel = null;
 		Iterator <AnimatedModel> it = animatedModels.iterator();
 		while(it.hasNext())
 		{
@@ -405,13 +419,23 @@ public class GameEngine {
 			{
 				if(animatedModel instanceof Spawn)
 				{
-					player.setSpawn(true);
+					Spawn spawn = (Spawn)animatedModel;
+					if(spawn.isPlayerSpawn())
+					{
+						player.setSpawn(true);
+						ShieldPowerUp spawnShield = new ShieldPowerUp(player.getX(), player.getY(), iLoader, 240);
+						spawnShield.activateEffect(this);
+						activeEffects.add(spawnShield);
+						pendingAnimatedModel = new InvincibleModel(player.getX(), player.getY(), iLoader, this);
+					}
 					for(EnemyTankBase enemy : enemytanks)
 						enemy.setSpawn(true);
 				}
 				it.remove();
 			}
 		}
+		if(pendingAnimatedModel != null)
+			animatedModels.add(pendingAnimatedModel);
 	}
 
 	public void updateModels()
