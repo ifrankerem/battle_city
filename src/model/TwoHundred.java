@@ -11,7 +11,6 @@ public class TwoHundred extends HundredsBase{
 		this.frameIndex = 0;
 		this.frameCounter = 0;
 		this.frame = iLoader.getTwoHundred();
-		this.FRAME_DELAY = 30;
 	}
 
 

@@ -11,8 +11,6 @@ public class FiveHundred extends HundredsBase{
 		this.frameIndex = 0;
 		this.frameCounter = 0;
 		this.frame = iLoader.getFiveHundred();
-		this.FRAME_DELAY = 30;
 	}
 
 }
-

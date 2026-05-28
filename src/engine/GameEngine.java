@@ -10,7 +10,7 @@ import level.Level;
 import model.AnimatedModel;
 import model.BulletExplosion;
 import model.Explosion;
-import model.OneHundred;
+import model.FiveHundred;
 import model.Spawn;
 import model.TankExplosion;
 import model.ThreeHundred;
@@ -378,11 +378,11 @@ public class GameEngine {
 			{
 				animatedModels.add(new TankExplosion(enemy.getX(), enemy.getY(), iLoader));
 				if(enemy instanceof EnemyTankGreen)
-					models.add(new OneHundred(enemy.getX(), enemy.getY(), iLoader));
-				else if(enemy instanceof EnemyTankPink)
 					models.add(new TwoHundred(enemy.getX(), enemy.getY(), iLoader));
-				else if(enemy instanceof EnemyTankWhite)
+				else if(enemy instanceof EnemyTankPink)
 					models.add(new ThreeHundred(enemy.getX(), enemy.getY(), iLoader));
+				else if(enemy instanceof EnemyTankWhite)
+					models.add(new FiveHundred(enemy.getX(), enemy.getY(), iLoader));
 				it_t.remove();
 			}
 		}
@@ -505,13 +505,13 @@ public class GameEngine {
 			Iterator <AnimatedModel> eit = animatedModels.iterator();
 			while(eit.hasNext())
 				eit.next().draw(g);
-			Iterator <Model> hit = models.iterator();
-			while(hit.hasNext())
-				hit.next().draw(g);
 			Iterator <PowerUp> pit = powerUps.iterator();
 			while(pit.hasNext())
 				pit.next().draw(g);
 			levels[currentLevelindex].topdraw(g);
+			Iterator <Model> hit = models.iterator();
+			while(hit.hasNext())
+				hit.next().draw(g);
 		}
 	}
 

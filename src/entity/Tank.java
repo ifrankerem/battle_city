@@ -27,7 +27,7 @@ abstract public class Tank extends GameObject{
 		super(x,y,iLoader);
 		this.dir = dir;
 		this.speed = speed;
-		this.maxBulletCount = 1; //TODO if player gets bonux it will be 2
+		this.maxBulletCount = 1;
 		this.bulletCount = 0;
 		this.bulletSpeedBonus = 0;
 		this.isSpawn = false;

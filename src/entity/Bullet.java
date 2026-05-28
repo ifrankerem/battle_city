@@ -24,7 +24,7 @@ public class Bullet extends GameObject {
 		this.ownerTank = ownerTank;
 		this.dir = ownerTank.dir;
 		this.active = true;
-		this.speed = 7; //TODO speed will update when bonus added
+		this.speed = 7;
 		this.initImage();
 	}
 
