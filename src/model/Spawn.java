@@ -1,13 +1,10 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.awt.Graphics;
-
-
 import gui.GamePanel;
 import util.ImageLoader;
 
-public class Spawn extends Explosion{
+public class Spawn extends AnimatedModel{
 
 	public Spawn(double x, double y, ImageLoader iLoader)
 	{
@@ -21,17 +18,9 @@ public class Spawn extends Explosion{
 		this.frames[2] = iLoader.getEntitySprite2(6, 19);
 		this.frames[3] = iLoader.getEntitySprite2(6, 20);
 		this.FRAME_DELAY = 30;
+		this.drawX = (int)Math.round(x);
+		this.drawY = (int)Math.round(y);
+		this.size = GamePanel.ENTITY_SIZE + 10;
+		
 	}
-
-
-
-	public void draw(Graphics g)
-	{
-		if(!active)
-			return;
-		int drawX = (int)Math.round(x);
-		int drawY = (int)Math.round(y);
-		g.drawImage(frames[frameIndex], drawX, drawY, GamePanel.ENTITY_SIZE + 10, GamePanel.ENTITY_SIZE + 10, null);
-	}
-
 }

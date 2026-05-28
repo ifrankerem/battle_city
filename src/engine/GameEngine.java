@@ -7,20 +7,17 @@ import entity.EnemyTankGreen;
 import entity.EnemyTankPink;
 import entity.EnemyTankWhite;
 import level.Level;
-import model.Direction;
 import model.Explosion;
-import model.GameState;
 import model.OneHundred;
 import model.Spawn;
 import model.TankExplosion;
 import model.ThreeHundred;
+import util.Direction;
+import util.GameState;
 import util.ImageLoader;
-import model.GameObject;
 import java.util.ArrayList;
 import java.util.Iterator;
-import entity.Tank;
 import gui.GamePanel;
-import gui.contentPanel;
 import model.TwoHundred;
 import model.FiveHundred;
 import java.awt.Color;
@@ -80,7 +77,7 @@ public class GameEngine {
 	{	
 		if(active_enemy_nbr == 0 && maxEnemy == 0)
 			this.gameState = GameState.LEVEL_COMPLETE;
-		while(active_enemy_nbr < 3 && active_enemy_nbr >= 0)
+		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0)
 		{
 			int random = (int)(Math.random() * 3);
 			spawns.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
@@ -322,7 +319,6 @@ public class GameEngine {
 		while(it.hasNext())
 		{
 			OneHundred oneHundred = it.next();
-			oneHundred.update();
 			if(!oneHundred.isActive())
 				it.remove();
 		}
@@ -334,7 +330,6 @@ public class GameEngine {
 		while(it.hasNext())
 		{
 			TwoHundred twoHundred = it.next();
-			twoHundred.update();
 			if(!twoHundred.isActive())
 				it.remove();
 		}
@@ -346,7 +341,6 @@ public class GameEngine {
 		while(it.hasNext())
 		{
 			FiveHundred fiveHundred = it.next();
-			fiveHundred.update();
 			if(!fiveHundred.isActive())
 				it.remove();
 		}
@@ -357,7 +351,6 @@ public class GameEngine {
 		while(it.hasNext())
 		{
 			ThreeHundred threeHundred = it.next();
-			threeHundred.update();
 			if(!threeHundred.isActive())
 				it.remove();
 		}
@@ -495,21 +488,34 @@ public class GameEngine {
 
 	public void drawLevelComplete(Graphics g)
 	{
-		g.setColor(Color.BLACK);
+		g.setColor(java.awt.Color.BLACK);
 		g.fillRect(0, 0, GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT);
 
 		int digitW = 20;
 		int digitH = 20;
 
-		g.drawImage(iLoader.getTotalScoreImage(), 170, 50, 150, 37, null);
-		this.drawNumber(g, score, 340, 60, digitW, digitH);
+		int tsW = 150;
+		int tsH = 37;
+		String scoreStr = String.valueOf(score);
+		int scoreW = scoreStr.length() * digitW;
+		int tsTotalW = tsW + 20 + scoreW;
+		int tsStartX = (GamePanel.GAME_WIDTH - tsTotalW) / 2 - 15;
+		int topY = 90;
+		
+		g.drawImage(iLoader.getTotalScoreImage(), tsStartX, topY, tsW, tsH, null);
+		this.drawNumber(g, score, tsStartX + tsW + 20, topY + (tsH - digitH) / 2, digitW, digitH);
 
 		int stageW = 117;
 		int stageH = 21;
-		g.drawImage(iLoader.getStageImage(), 220, 120, stageW, stageH, null);
-		this.drawNumber(g, this.currentLevelindex + 1, 220 + stageW + 15, 120, digitW, digitH);
+		String levelStr = String.valueOf(this.currentLevelindex + 1);
+		int stageTotalW = stageW + 15 + levelStr.length() * digitW;
+		int stageStartX = (GamePanel.GAME_WIDTH - stageTotalW) / 2 - 15;
+		int stageY = 160;
+		
+		g.drawImage(iLoader.getStageImage(), stageStartX, stageY, stageW, stageH, null);
+		this.drawNumber(g, this.currentLevelindex + 1, stageStartX + stageW + 15, stageY, digitW, digitH);
 
-		int startY = 220;
+		int startY = 260;
 		int rowGap = 60;
 		
 		drawTankKillRow(g, whiteTanknbr, 500, 3, 8, startY);
@@ -518,14 +524,14 @@ public class GameEngine {
 
 		int totalY = startY + 3 * rowGap + 20;
 		
-		g.setColor(Color.WHITE);
-		g.fillRect(250, totalY - 10, 140, 4);
+		g.setColor(java.awt.Color.WHITE);
+		g.fillRect(230, totalY - 10, 203, 4);
 
-		g.drawImage(iLoader.getTotalImage(), 160, totalY, 90, 30, null);
+		g.drawImage(iLoader.getTotalImage(), 195, totalY, 90, 30, null);
 		
 		int totalTanks = whiteTanknbr + greenTanknbr + pinkTanknbr;
 		String totalTanksStr = String.valueOf(totalTanks);
-		int totalTanksX = 290 - (totalTanksStr.length() * digitW);
+		int totalTanksX = 345 - (totalTanksStr.length() * digitW);
 		this.drawNumber(g, totalTanks, totalTanksX, totalY + 5, digitW, digitH);
 	}
 
@@ -544,11 +550,11 @@ public class GameEngine {
 		String ptsStr = String.valueOf(ptsValue);
 		String countStr = String.valueOf(count);
 
-		int ptsNumX = 180 - (ptsStr.length() * digitW);
-		int ptsImgX = 190;
-		int countNumX = 290 - (countStr.length() * digitW);
-		int arrowX = 300;
-		int tankImgX = 340;
+		int ptsNumX = 220 - (ptsStr.length() * digitW); 
+		int ptsImgX = 230;
+		int countNumX = 345 - (countStr.length() * digitW);
+		int arrowX = 350;
+		int tankImgX = 385;
 
 		this.drawNumber(g, ptsValue, ptsNumX, y + 10, digitW, digitH);
 

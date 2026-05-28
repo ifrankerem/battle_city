@@ -1,11 +1,12 @@
 package entity;
 
 import model.GameObject;
+import util.Direction;
 import util.ImageLoader;
 import java.awt.Graphics;
 import java.awt.Color;
 import gui.GamePanel;
-import model.Direction;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
@@ -28,7 +29,7 @@ public class Bullet extends GameObject {
 		this.dir = ownerTank.dir;
 		this.damage = 1;
 		this.active = true;
-		this.speed = 3; //TODO speed will update when bonus added
+		this.speed = 7; //TODO speed will update when bonus added
 		this.initImage();
 	}
 

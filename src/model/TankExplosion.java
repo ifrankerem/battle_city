@@ -2,12 +2,10 @@ package model;
 
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
-
-
 import gui.GamePanel;
 import util.ImageLoader;
 
-public class TankExplosion extends Explosion{
+public class TankExplosion extends AnimatedModel{
 
 	public TankExplosion(double x, double y, ImageLoader iLoader)
 	{
@@ -19,15 +17,9 @@ public class TankExplosion extends Explosion{
 		this.frames[0] = iLoader.getTankboom1();
 		this.frames[1] = iLoader.getTankboom2();
 		this.FRAME_DELAY = 30;
-	}
-
-	public void draw(Graphics g)
-	{
-		if(!active)
-			return;
-		int drawX = (int)Math.round(x);
-		int drawY = (int)Math.round(y);
-		g.drawImage(frames[frameIndex], drawX - GamePanel.ENTITY_SIZE / 2, drawY - GamePanel.ENTITY_SIZE / 2, GamePanel.ENTITY_SIZE * 2, GamePanel.ENTITY_SIZE * 2, null);
+		this.drawX = (int)Math.round(x) - GamePanel.ENTITY_SIZE / 2;
+		this.drawY = (int)Math.round(y) - GamePanel.ENTITY_SIZE / 2;
+		this.size = GamePanel.ENTITY_SIZE *2;
 	}
 
 }

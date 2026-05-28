@@ -1,12 +1,12 @@
 package level;
 
 import gui.GamePanel;
-import model.GameState;
 import tile.Base;
 import tile.Bush;
 import tile.EmptyTile;
 import tile.Tile;
 import tile.Water;
+import util.GameState;
 
 import java.awt.Graphics;
 

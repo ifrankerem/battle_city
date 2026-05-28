@@ -1,6 +1,6 @@
 package entity;
 
-import model.Direction;
+import util.Direction;
 import util.ImageLoader;
 
 public class EnemyTankWhite extends EnemyTankBase{

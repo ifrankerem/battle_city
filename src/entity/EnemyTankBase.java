@@ -3,7 +3,7 @@ package entity;
 import java.util.ArrayList;
 
 import gui.GamePanel;
-import model.Direction;
+import util.Direction;
 import util.ImageLoader;
 import level.Level;
 

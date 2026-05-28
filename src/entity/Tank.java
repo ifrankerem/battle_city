@@ -1,6 +1,7 @@
 package entity;
 
 import model.GameObject;
+import util.Direction;
 import util.ImageLoader;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -8,9 +9,6 @@ import java.awt.Rectangle;
 import level.Level;
 import java.util.ArrayList;
 import gui.GamePanel;
-
-
-import model.Direction;
 
 abstract public class Tank extends GameObject{
 

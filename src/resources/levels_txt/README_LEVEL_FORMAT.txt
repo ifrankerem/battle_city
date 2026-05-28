@@ -13,9 +13,3 @@ Codes:
 4 = water / not passable
 5 = base / eagle / special object; if destroyed, game over
 6 = ice / gray slippery road / passable
-
-Notes:
-- Player/enemy spawns are NOT drawn in these background PNGs, so I did not encode them here.
-  Add them in code separately, for example enemy spawn points at the top and player spawn near the base.
-- Files contain only the grid, no header, so LevelLoader can read line-by-line directly.
-- In collision logic, 0, 3 and 6 should be passable. 1, 2 and 4 should block tank movement. 5 is special.

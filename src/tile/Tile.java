@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import gui.GamePanel;
 import model.GameObject;
-import model.GameState;
+import util.GameState;
 import util.ImageLoader;
 import java.awt.Color;
 import entity.Bullet;

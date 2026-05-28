@@ -2,7 +2,7 @@ package entity;
 
 import engine.InputManager;
 import gui.GamePanel;
-import model.Direction;
+import util.Direction;
 import util.ImageLoader;
 import java.util.ArrayList;
 import level.Level;
