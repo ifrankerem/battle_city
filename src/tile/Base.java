@@ -3,11 +3,7 @@ package tile;
 import util.ImageLoader;
 import java.awt.Graphics;
 
-import gui.GamePanel;
-
 public class Base extends Tile {
-
-	private int health;
 
 	public Base(double x, double y, ImageLoader iLoader, boolean isTopLeft)
 	{
@@ -15,7 +11,6 @@ public class Base extends Tile {
 		this.name = "base";
 		this.isPassable = false;
 		this.isDestroyable = false;
-		this.health = 1;
 		if (isTopLeft) {
 			this.image = iLoader.getEntitySprite2(2, 19);
 		} else {

@@ -2,7 +2,6 @@ package model;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import gui.GamePanel;
 import util.ImageLoader;
 
 public class AnimatedModel extends GameObject {

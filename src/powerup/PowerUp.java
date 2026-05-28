@@ -5,7 +5,7 @@ import model.Model;
 import util.ImageLoader;
 import java.awt.Graphics;
 
-public class PowerUp extends Model {
+public class PowerUp extends Model{
 
 
 	public PowerUp(double x, double y, ImageLoader iLoader)

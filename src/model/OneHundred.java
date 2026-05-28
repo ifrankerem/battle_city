@@ -3,7 +3,7 @@ package model;
 import gui.GamePanel;
 import util.ImageLoader;
 
-public class OneHundred extends Model{
+public class OneHundred extends HundredsBase{
 
 	public OneHundred(double x, double y, ImageLoader iLoader)
 	{

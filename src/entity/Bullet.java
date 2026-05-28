@@ -8,8 +8,6 @@ import java.awt.Color;
 import gui.GamePanel;
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-
 import level.Level;
 
 
@@ -19,7 +17,6 @@ public class Bullet extends GameObject {
 	private Direction dir;
 	private int speed;
 	private Tank ownerTank;
-	private int damage;
 	private boolean active;
 	
 	public Bullet(double x, double y, ImageLoader iLoader, Tank ownerTank)
@@ -27,7 +24,6 @@ public class Bullet extends GameObject {
 		super(x, y, iLoader);
 		this.ownerTank = ownerTank;
 		this.dir = ownerTank.dir;
-		this.damage = 1;
 		this.active = true;
 		this.speed = 7; //TODO speed will update when bonus added
 		this.initImage();

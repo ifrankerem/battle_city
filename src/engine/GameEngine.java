@@ -7,7 +7,8 @@ import entity.EnemyTankGreen;
 import entity.EnemyTankPink;
 import entity.EnemyTankWhite;
 import level.Level;
-import model.Explosion;
+import model.AnimatedModel;
+import model.BulletExplosion;
 import model.OneHundred;
 import model.Spawn;
 import model.TankExplosion;
@@ -19,26 +20,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import gui.GamePanel;
 import model.TwoHundred;
-import model.FiveHundred;
+import model.Model;
 import java.awt.Color;
 
 public class GameEngine {
 
-	private boolean isPaused;
 	private InputManager iManager;
 	private PlayerTank player;
 	private ImageLoader iLoader;
 	private Level[] levels;
 	private int currentLevelindex;
 	private ArrayList <Bullet> bullets;
-	private ArrayList <Explosion> explosions;
 	private ArrayList <EnemyTankBase> enemytanks;
-	private ArrayList <Spawn> spawns;
-	private ArrayList <TankExplosion> tankExplosions;
-	private ArrayList <OneHundred> oneHundreds;
-	private ArrayList <TwoHundred> twoHundreds;
-	private ArrayList <ThreeHundred> threeHundreds;
-	private ArrayList <FiveHundred> fiveHundreds;
+	private ArrayList <AnimatedModel> animatedModels;
+	private ArrayList <Model> models;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
 	private static int maxEnemy = 5; //TODO DO 20 AT THE END OF DEVELOPMENT
@@ -54,18 +49,12 @@ public class GameEngine {
 	{
 		this.iManager = iManager;
 		this.iLoader = iLoader;
+		this.animatedModels = new ArrayList<AnimatedModel>();
+		this.models = new ArrayList<Model>();
 		this.bullets = new ArrayList<Bullet>();
-		this.explosions = new ArrayList<Explosion>();
-		this.tankExplosions = new ArrayList<TankExplosion>();
-		this.spawns = new ArrayList<Spawn>();
-		this.oneHundreds = new ArrayList<OneHundred>();
-		this.twoHundreds = new ArrayList<TwoHundred>();
-		this.threeHundreds = new ArrayList<ThreeHundred>();
-		this.fiveHundreds = new ArrayList<FiveHundred>();
 		this.playerSpawn();
 		this.enemytanks = new ArrayList<EnemyTankBase>();
 		this.enemySpawn();
-		this.isPaused = false;
 		this.levels = levels;
 		this.currentLevelindex = 5;
 		this.score = 0;
@@ -80,23 +69,23 @@ public class GameEngine {
 		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0)
 		{
 			int random = (int)(Math.random() * 3);
-			spawns.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
+			animatedModels.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader));
 			if(random == 0)
 			{
 				EnemyTankWhite enemy = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-				this.whiteTanknbr++;
+				whiteTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else if(random == 1)
 			{
 				EnemyTankGreen enemy = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-				this.greenTanknbr++;
+				greenTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else
 			{
 				EnemyTankPink enemy = new EnemyTankPink(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
-				this.pinkTanknbr++;
+				pinkTanknbr++;
 				enemytanks.add(enemy);
 			}
 			active_enemy_nbr++;
@@ -110,7 +99,7 @@ public class GameEngine {
 			this.gameState = GameState.GAME_OVER; //TODO when game is over. UI gonna change
 		if(player_max_health > 0)
 		{
-			spawns.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
+			animatedModels.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader));
 			this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
 		}
 
@@ -127,7 +116,8 @@ public class GameEngine {
 
 		if(this.gameState == GameState.PLAYING)
 		{
-			this.updateSpawn();
+			this.updateAnimatedModels();
+			this.updateModels();
 			this.updateTanks();
 			if(maxEnemy != 0)
 				this.enemySpawn();
@@ -139,30 +129,6 @@ public class GameEngine {
 			Iterator <Bullet> it = bullets.iterator();
 			while(it.hasNext())
 				it.next().updateMovement(levels[currentLevelindex]);
-			this.updateExplosions();
-			this.updateTankExplosions();
-			this.updateOneHundred();
-			this.updateTwoHundred();
-			this.updateThreeHundred();
-			this.updateFiveHundred();
-		}
-	}
-
-	public void updateSpawn()
-	{
-		Iterator <Spawn> it = spawns.iterator();
-		while(it.hasNext())
-		{
-			Spawn spawn = it.next();
-			spawn.update();
-			if(!spawn.isActive())
-				{
-					it.remove();
-					player.setSpawn(true);
-					Iterator <EnemyTankBase> eit = enemytanks.iterator();
-					while(eit.hasNext())
-						eit.next().setSpawn(true);
-				}
 		}
 	}
 
@@ -229,6 +195,11 @@ public class GameEngine {
 		}
 	}
 
+	public void playerPowerUpCollision()
+	{
+
+	}
+
 
 	public void updateBullets()
 	{
@@ -252,7 +223,7 @@ public class GameEngine {
 			Bullet bullet = it.next();
 			if(bullet.getActive() == false)
 			{
-				explosions.add(new Explosion(bullet.getX(), bullet.getY(), iLoader));
+				animatedModels.add(new BulletExplosion(bullet.getX(), bullet.getY(), iLoader));
 				it.remove();
 			}
 		}
@@ -270,92 +241,55 @@ public class GameEngine {
 			EnemyTankBase enemy = it_t.next();
 			if(enemy.get_isAlive() == false)
 			{
-				tankExplosions.add(new TankExplosion(enemy.getX(), enemy.getY(), iLoader));
+				animatedModels.add(new TankExplosion(enemy.getX(), enemy.getY(), iLoader));
 				if(enemy instanceof EnemyTankGreen)
-					oneHundreds.add(new OneHundred(enemy.getX(), enemy.getY(), iLoader));
+					models.add(new OneHundred(enemy.getX(), enemy.getY(), iLoader));
 				else if(enemy instanceof EnemyTankPink)
-					twoHundreds.add(new TwoHundred(enemy.getX(), enemy.getY(), iLoader));
+					models.add(new TwoHundred(enemy.getX(), enemy.getY(), iLoader));
 				else if(enemy instanceof EnemyTankWhite)
-					threeHundreds.add(new ThreeHundred(enemy.getX(), enemy.getY(), iLoader));
+					models.add(new ThreeHundred(enemy.getX(), enemy.getY(), iLoader));
 				it_t.remove();
 			}
 		}
 		if(player.get_isAlive() == false)
 		{
-			tankExplosions.add(new TankExplosion(player.getX(), player.getY(), iLoader));
+			animatedModels.add(new TankExplosion(player.getX(), player.getY(), iLoader));
 			this.playerSpawn();
 			player_max_health--;
 		}
 	}
 
-	public void updateExplosions()
+	public void updateAnimatedModels()
 	{
-		Iterator <Explosion> it = explosions.iterator();
+		Iterator <AnimatedModel> it = animatedModels.iterator();
 		while(it.hasNext())
 		{
-			Explosion explosion = it.next();
-			explosion.update();
-			if(!explosion.isActive())
+			AnimatedModel animatedModel = it.next();
+			animatedModel.update();
+			if(!animatedModel.isActive())
+			{
+				if(animatedModel instanceof Spawn)
+				{
+					player.setSpawn(true);
+					for(EnemyTankBase enemy : enemytanks)
+						enemy.setSpawn(true);
+				}
 				it.remove();
+			}
 		}
 	}
 
-
-	public void updateTankExplosions()
+	public void updateModels()
 	{
-		Iterator <TankExplosion> it = tankExplosions.iterator();
+		Iterator <Model> it = models.iterator();
 		while(it.hasNext())
 		{
-			TankExplosion tankExplosions = it.next();
-			tankExplosions.update();
-			if(!tankExplosions.isActive())
+			Model model = it.next();
+			model.update();
+			if(!model.isActive())
 				it.remove();
 		}
 	}
-
-	public void updateOneHundred()
-	{
-		Iterator <OneHundred> it = oneHundreds.iterator();
-		while(it.hasNext())
-		{
-			OneHundred oneHundred = it.next();
-			if(!oneHundred.isActive())
-				it.remove();
-		}
-	}
-	
-	public void updateTwoHundred()
-	{
-		Iterator <TwoHundred> it = twoHundreds.iterator();
-		while(it.hasNext())
-		{
-			TwoHundred twoHundred = it.next();
-			if(!twoHundred.isActive())
-				it.remove();
-		}
-	}
-
-	public void updateFiveHundred()
-	{
-		Iterator <FiveHundred> it = fiveHundreds.iterator();
-		while(it.hasNext())
-		{
-			FiveHundred fiveHundred = it.next();
-			if(!fiveHundred.isActive())
-				it.remove();
-		}
-	}
-	public void updateThreeHundred()
-	{
-		Iterator <ThreeHundred> it = threeHundreds.iterator();
-		while(it.hasNext())
-		{
-			ThreeHundred threeHundred = it.next();
-			if(!threeHundred.isActive())
-				it.remove();
-		}
-	}
-
 
 	public boolean get_isPaused()
 	{
@@ -415,38 +349,17 @@ public class GameEngine {
 				if(curr.getSpawn())
 					curr.draw(g);
 			}
-			Iterator <Spawn> sit = spawns.iterator();
-			while(sit.hasNext())
-				sit.next().draw(g);
 			Iterator <Bullet> it = bullets.iterator();
 			while(it.hasNext())
 				it.next().draw(g);
-			Iterator <Explosion> eit = explosions.iterator();
+			Iterator <AnimatedModel> eit = animatedModels.iterator();
 			while(eit.hasNext())
 				eit.next().draw(g);
-			Iterator <TankExplosion> tit = tankExplosions.iterator();
-			while(tit.hasNext())
-				tit.next().draw(g);
-			this.drawHundred(g);
+			Iterator <Model> hit = models.iterator();
+			while(hit.hasNext())
+				hit.next().draw(g);
 			levels[currentLevelindex].topdraw(g);
 		}
-
-	}
-
-	public void drawHundred(Graphics g)
-	{
-		Iterator <OneHundred> iterator = oneHundreds.iterator();
-		while(iterator.hasNext())
-			iterator.next().draw(g);	
-		Iterator <TwoHundred> iterator2 = twoHundreds.iterator();
-		while(iterator2.hasNext())
-			iterator2.next().draw(g);	
-		Iterator <ThreeHundred> iterator3 = threeHundreds.iterator();
-		while(iterator3.hasNext())
-			iterator3.next().draw(g);	
-		Iterator <FiveHundred> iterator4 = fiveHundreds.iterator();
-		while(iterator4.hasNext())
-			iterator4.next().draw(g);	
 
 	}
 

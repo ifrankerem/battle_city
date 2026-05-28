@@ -2,7 +2,7 @@ package model;
 
 import util.ImageLoader;
 
-public class ThreeHundred extends OneHundred{
+public class ThreeHundred extends HundredsBase{
 
 	public ThreeHundred(double x, double y, ImageLoader iLoader)
 	{

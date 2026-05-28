@@ -4,9 +4,6 @@ import util.ImageLoader;
 
 public class SteelWall extends Tile {
 
-
-	private int health = 1;
-
 	public SteelWall(double x, double y, ImageLoader iLoader)
 	{
 		super(x, y, iLoader);

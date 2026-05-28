@@ -1,11 +1,10 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.awt.Graphics;
 import gui.GamePanel;
 import util.ImageLoader;
 
-public class TankExplosion extends AnimatedModel{
+public class TankExplosion extends Explosion{
 
 	public TankExplosion(double x, double y, ImageLoader iLoader)
 	{

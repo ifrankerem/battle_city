@@ -12,7 +12,6 @@ public class ImageLoader {
 	private static final int SPRITE_SIZE = 16;
 	private BufferedImage spriteSheet;
 	private BufferedImage spriteSheet2;
-	private BufferedImage[][] sprites; // sprites in array data structure so ı can reach easily
 	private BufferedImage bullet_north;
 	private BufferedImage bullet_east;
 	private BufferedImage bullet_west;

@@ -23,6 +23,18 @@ public class Model extends GameObject {
 		this.frameCounter = 0;
 	}
 
+	public void update()
+	{
+		if(!active)
+			return;
+
+		frameCounter++;
+		if(frameCounter >= FRAME_DELAY)
+		{
+			active = false;
+		}
+	}
+
 	public void draw(Graphics g)
 	{
 		if(!active)

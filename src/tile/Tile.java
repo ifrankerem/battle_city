@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import gui.GamePanel;
 import model.GameObject;
-import util.GameState;
 import util.ImageLoader;
 import java.awt.Color;
 import entity.Bullet;
