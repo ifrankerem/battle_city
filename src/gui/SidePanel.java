@@ -91,9 +91,7 @@ public class SidePanel extends JPanel {
 		}
 	}
 
-	/**
-	 * Returns the Y position after the enemy counter section ends.
-	 */
+
 	private int getEnemyCounterEndY()
 	{
 		int totalEnemies = engine.getMaxEnemy() + engine.getActiveEnemyCount();

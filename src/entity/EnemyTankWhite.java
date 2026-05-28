@@ -8,7 +8,7 @@ public class EnemyTankWhite extends EnemyTankBase{
 	public EnemyTankWhite(double x, double y, double speed, Direction dir,ImageLoader iLoader)
 	{
 		super(x, y, speed, dir, iLoader);
-		this.health = 3;
+		this.health = 1; //TODO end of the development this value will be 3
 		this.score = 500;
 	}
 

@@ -23,6 +23,8 @@ public class ImageLoader {
 	private BufferedImage tankboom1;
 	private BufferedImage tankboom2;
 	private BufferedImage[] digits;
+	private BufferedImage[] digits_white;
+	private BufferedImage digits_text_white;
 	private BufferedImage enemyCounterImage;
 	private BufferedImage flagImage;
 	private BufferedImage playerHealthImage;
@@ -37,6 +39,7 @@ public class ImageLoader {
 	private BufferedImage ptsImage;
 	private BufferedImage totalImage;
 	private BufferedImage totalScoreImage;
+	private BufferedImage paused_textImage;
 
 	public ImageLoader()
 	{
@@ -52,12 +55,15 @@ public class ImageLoader {
 		this.tankboom1 = loadImage("/resources/images/tankboom1.png");
 		this.tankboom2 = loadImage("/resources/images/tankboom2.png");
 		this.digits = new BufferedImage[10];
+		this.digits_white = new BufferedImage[10];
 		this.digits_text = loadImage("/resources/images/numbers_text.png");
+		this.digits_text_white = loadImage("/resources/images/numbers_text_black.png");
 		this.enemyCounterImage = loadImage("/resources/images/enemy_counter.png");
 		this.flagImage = loadImage("/resources/images/flag.png");
 		this.playerHealthImage = loadImage("/resources/images/player_health.png");
 		this.pauseImage = loadImage("/resources/images/pause.png");
 		this.loadDigits();
+		this.loadDigits_white();
 		this.stageImage = loadImage("/resources/images/stage_text.png");
 		this.fiveHundred = loadImage("/resources/images/fiveHundred.png");
 		this.oneHundred = loadImage("/resources/images/oneHundred.png");
@@ -67,6 +73,7 @@ public class ImageLoader {
 		this.ptsImage = loadImage("/resources/images/pts.png");
 		this.totalImage = loadImage("/resources/images/total.png");
 		this.totalScoreImage = loadImage("/resources/images/total_score.png");
+		this.paused_textImage = loadImage("/resources/images/paused.png");
 	}
 
 	
@@ -100,6 +107,24 @@ public class ImageLoader {
 			int x = 1 + col * cellWidth;
 			int y = 1 + row * (cellHeight + 1); // +1 for separator row
 			this.digits[i] = digits_text.getSubimage(x, y, cellWidth, cellHeight);
+		}
+	}
+
+	public void loadDigits_white()
+	{
+		// numbers_text.png is 41x17 with 1px border on all sides and 1px separator row
+		// Layout: [1px border][7px digits][1px sep][7px digits][1px border] = 17 rows
+		//         [1px border][8px * 5 digits] = 41 cols
+		// Digits 0-4 on top (y=1), digits 5-9 on bottom (y=9), each 8x7
+		int cellWidth = 8;
+		int cellHeight = 7;
+
+		for(int i = 0; i < 10; i++) {
+			int col = i % 5;
+			int row = i / 5;
+			int x = 1 + col * cellWidth;
+			int y = 1 + row * (cellHeight + 1); // +1 for separator row
+			this.digits_white[i] = digits_text_white.getSubimage(x, y, cellWidth, cellHeight);
 		}
 	}
 
@@ -178,6 +203,11 @@ public class ImageLoader {
 	public BufferedImage getDigit(int index) {
 		return digits[index];
 	}
+	
+	public BufferedImage getDigit_white(int index) {
+		return digits_white[index];
+	}
+
 
 	public BufferedImage getPauseImage() {
 		return pauseImage;
@@ -216,5 +246,9 @@ public class ImageLoader {
 
 	public BufferedImage getTotalScoreImage() {
 		return totalScoreImage;
+	}
+
+	public BufferedImage getPaused_textImage() {
+		return paused_textImage;
 	}
 }
