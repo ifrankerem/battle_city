@@ -1,6 +1,6 @@
 package util;
 
-public class ScoreRecord {
+public class ScoreRecord implements Comparable<ScoreRecord>{
     private String name;
     private String date;
     private String time;
@@ -16,4 +16,24 @@ public class ScoreRecord {
     public String toCsvLine() {
         return name + "," + date + "," + time + "," + score;
     }
+
+	public int compareTo(ScoreRecord other)
+	{
+		return other.getScore() - this.getScore(); //highest to lowest
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public String getTime() {
+		return time;
+	}
+	public int getScore() {
+		return score;
+	}
 }

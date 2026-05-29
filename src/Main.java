@@ -6,6 +6,7 @@ import engine.GameEngine;
 import engine.InputManager;
 import gui.GameOverPanel;
 import gui.GamePanel;
+import gui.HighScoresPanel;
 import gui.ImagePagePanel;
 import gui.MainMenuPanel;
 import gui.MainFrame;
@@ -37,7 +38,7 @@ public class Main {
 		rootPanel.add(contentP, "GAME");
 		rootPanel.add(new GameOverPanel(cards, rootPanel, windowMain, engine), "GAME_OVER");
 		rootPanel.add(new ImagePagePanel("/resources/images/MapEditor.png", cards, rootPanel, windowMain), "MAP_EDITOR");
-		rootPanel.add(new ImagePagePanel("/resources/images/HighScores.png", cards, rootPanel, windowMain), "HIGH_SCORES");
+		rootPanel.add(new HighScoresPanel(cards, rootPanel, windowMain, engine), "HIGH_SCORES");
 		rootPanel.add(new ImagePagePanel("/resources/images/Help.png", cards, rootPanel, windowMain), "HELP");
 		rootPanel.add(new ImagePagePanel("/resources/images/About.png", cards, rootPanel, windowMain), "ABOUT");
 		windowMain.add(rootPanel);
