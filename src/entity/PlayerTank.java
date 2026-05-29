@@ -11,18 +11,23 @@ public class PlayerTank extends Tank{
 
 
 	private InputManager inputs;
+	private int shootCoolDown;
+	private int shootCoolDownMax;
 
 	public PlayerTank(double x, double y, double speed, Direction dir,InputManager inputs, ImageLoader iLoader)
 	{
 		super(x,y,speed,dir,iLoader);
 		this.inputs = inputs;
 		this.health = 1;
+		this.shootCoolDown = 0;
+		this.shootCoolDownMax = 20;
 	}
 
 	public void updateMovement(Level currentLevel,ArrayList <Bullet> bullets)
 	{
 		double nextX = x;
 		double nextY = y;
+		this.updateShootCoolDown();
 		if(this.isSpawn)
 		{
 			if(inputs.up || inputs.down || inputs.left || inputs.right) // there will be no animation while player standing still
@@ -63,13 +68,30 @@ public class PlayerTank extends Tank{
 					this.SpriteCounter = 0;
 				}
 		}
-			if(inputs.space)
+			if(inputs.space && this.canShoot() && this.countBullets(bullets) < this.maxBulletCount)
+			{
 				this.shoot();
+				this.resetShootCoolDown();
+			}
 			this.updateHitbox();
 
-
 		}
+	}
 
+	public void updateShootCoolDown()
+	{
+		if(this.shootCoolDown > 0)
+			shootCoolDown--;
+	}
+
+	public boolean canShoot()
+	{
+		return this.shootCoolDown <= 0;
+	}
+
+	public void resetShootCoolDown()
+	{
+		this.shootCoolDown = this.shootCoolDownMax;
 	}
 
 	public void updateDraw()

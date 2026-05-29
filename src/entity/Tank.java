@@ -82,7 +82,7 @@ abstract public class Tank extends GameObject{
 	{
 		this.bullet = new Bullet(this.x + 13, this.y + 13, iLoader, this);
 		if(this.bulletSpeedBonus > 0)
-			this.bullet.incrementSpeed(this.bulletSpeedBonus);
+		this.bullet.incrementSpeed(this.bulletSpeedBonus);
 	}
 
 
@@ -133,4 +133,5 @@ abstract public class Tank extends GameObject{
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
 	}
+
 }
