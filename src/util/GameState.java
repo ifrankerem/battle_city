@@ -5,7 +5,8 @@ public enum GameState{
 	PLAYING(1),
 	PAUSED(2),
 	GAME_OVER(4),
-	LEVEL_COMPLETE(5);
+	LEVEL_COMPLETE(5),
+	STAGE_LOAD(6);
 
 	private final int num;
 

@@ -1,3 +1,3 @@
-gameover retry isim sorma csv kaydetme
-main MENU ekranı
+
 stage load ekranı
+butun stageler biterse game finished ekranı

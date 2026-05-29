@@ -72,6 +72,7 @@ public class Bullet extends GameObject {
 		{
 			this.y = nextY;
 			this.x = nextX;
+			this.updateHitbox();
 		}
 		else
 			this.active = false;
@@ -85,7 +86,6 @@ public class Bullet extends GameObject {
 		int drawX = (int)Math.round(this.x);
 		int drawY = (int)Math.round(this.y);
 
-		this.updateHitbox();
 		g.drawImage(this.getImage(),drawX,drawY,GamePanel.BULLET_SIZE,GamePanel.BULLET_SIZE,null);
 		//this.drawHitbox(g);
 	}

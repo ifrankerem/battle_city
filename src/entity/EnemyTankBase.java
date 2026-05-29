@@ -63,7 +63,6 @@ public abstract class EnemyTankBase extends Tank{
 				nextX += speed;
 			else if(dir == Direction.WEST)
 				nextX -= speed;
-			this.enemyAI();
 			if(nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width)) && currentLevel.hitboxControl(nextX, nextY, this.hitbox.width, this.hitbox.height))
 			{
 				this.y = nextY;
@@ -71,6 +70,7 @@ public abstract class EnemyTankBase extends Tank{
 			}
 			else
 				this.randomDir();
+			this.enemyAI();
 			//updateMovement func calls 60 times in a second so in every 10 frame i reset the counter so animation will be smooth. the animation will change in every 10 frame
 			this.SpriteCounter++;
 			if(this.SpriteCounter > 10)

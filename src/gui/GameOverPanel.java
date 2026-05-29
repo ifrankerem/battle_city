@@ -39,6 +39,7 @@ public class GameOverPanel extends JPanel {
 			{
 				if(returnButtonBounds.contains(e.getX(), e.getY()))
 				{
+					GameOverPanel.this.engine.getiManager().reset();
 					GameOverPanel.this.cards.show(GameOverPanel.this.rootPanel, "MENU");
 					GameOverPanel.this.windowMain.pack();
 				}

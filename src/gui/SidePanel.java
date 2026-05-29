@@ -14,6 +14,7 @@ import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import util.GameState;
 
 public class SidePanel extends JPanel {
 	

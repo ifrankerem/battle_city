@@ -15,6 +15,11 @@ public class InputManager implements KeyListener {
 
 	public InputManager()
 	{
+		this.reset();
+	}
+
+	public void reset()
+	{
 		this.up = false;
 		this.down = false;
 		this.right = false;

@@ -39,6 +39,7 @@ public class ImageLoader {
 	private BufferedImage totalImage;
 	private BufferedImage totalScoreImage;
 	private BufferedImage paused_textImage;
+	private BufferedImage stageLoadImage;
 
 	public ImageLoader()
 	{
@@ -73,6 +74,7 @@ public class ImageLoader {
 		this.totalImage = loadImage("/resources/images/total.png");
 		this.totalScoreImage = loadImage("/resources/images/total_score.png");
 		this.paused_textImage = loadImage("/resources/images/pause2.png");
+		this.stageLoadImage = loadImage("/resources/images/stageLoad.png");
 	}
 
 	
@@ -249,5 +251,9 @@ public class ImageLoader {
 
 	public BufferedImage getPaused_textImage() {
 		return paused_textImage;
+	}
+
+	public BufferedImage getStageLoadImage() {
+		return stageLoadImage;
 	}
 }

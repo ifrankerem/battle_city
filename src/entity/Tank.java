@@ -80,7 +80,21 @@ abstract public class Tank extends GameObject{
 
 	public void shoot()
 	{
-		this.bullet = new Bullet(this.x + 13, this.y + 13, iLoader, this);
+		int centerOffset = (GamePanel.ENTITY_SIZE - GamePanel.BULLET_SIZE) / 2;
+		double bulletX = this.x + centerOffset;
+		double bulletY = this.y + centerOffset;
+
+		//this is for finding the center and up for tanks
+		if(this.dir == Direction.NORTH)
+			bulletY = this.y - GamePanel.BULLET_SIZE;
+		else if(this.dir == Direction.SOUTH)
+			bulletY = this.y + GamePanel.ENTITY_SIZE;
+		else if(this.dir == Direction.EAST)
+			bulletX = this.x + GamePanel.ENTITY_SIZE;
+		else if(this.dir == Direction.WEST)
+			bulletX = this.x - GamePanel.BULLET_SIZE;
+
+		this.bullet = new Bullet(bulletX, bulletY, iLoader, this);
 		if(this.bulletSpeedBonus > 0)
 		this.bullet.incrementSpeed(this.bulletSpeedBonus);
 	}

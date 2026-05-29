@@ -6,7 +6,6 @@ import util.ImageLoader;
 
 public class StarPowerUp extends PowerUp{
 
-	private static int counter = 0;
 	public StarPowerUp(double x, double y, ImageLoader iLoader)
 	{
 		super(x, y, iLoader);
@@ -16,7 +15,7 @@ public class StarPowerUp extends PowerUp{
 
 	public void action(GameEngine engine)
 	{
-		counter++;
+		int counter = engine.incrementStarPowerCounter();
 		if(counter == 1)
 			engine.getPlayer().incrementBulletSpeed(2);
 		else if(counter == 2)
@@ -24,6 +23,4 @@ public class StarPowerUp extends PowerUp{
 		else if(counter == 3)
 			engine.getCurrentLevel().updateSteel();
 	}
-
-	
 }
