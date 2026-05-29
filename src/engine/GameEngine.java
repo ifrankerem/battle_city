@@ -1,5 +1,9 @@
 package engine;
 import java.awt.Graphics;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 import entity.PlayerTank;
 import entity.Bullet;
 import entity.EnemyTankBase;
@@ -18,8 +22,14 @@ import model.ThreeHundred;
 import util.Direction;
 import util.GameState;
 import util.ImageLoader;
+import util.ScoreManager;
+import util.ScoreRecord;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.swing.JOptionPane;
+
 import gui.GamePanel;
 import model.TwoHundred;
 import powerup.BombPowerUp;
@@ -48,7 +58,7 @@ public class GameEngine {
 	private ArrayList<TimedPowerUps> activeEffects;
 	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PlayerBaseSpawnCords = {220,570};
-	private static int maxEnemy = 20; // Changed to 20 to trigger powerups at 13 and 7
+	private static int maxEnemy = 20; // Changed to 20 to trigger 
 	private int score;
 	private static int active_enemy_nbr = 0;
 	private static int player_max_health = 3;
@@ -61,6 +71,8 @@ public class GameEngine {
 	private boolean powerUp13Spawned = false;
 	private boolean powerUp7Spawned = false;
 	private static int powerUpStarMax = 3;
+	private ScoreManager scoreManager;
+	private boolean nameAsked;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -71,15 +83,41 @@ public class GameEngine {
 		this.bullets = new ArrayList<Bullet>();
 		this.powerUps = new ArrayList<PowerUp>();
 		this.activeEffects = new ArrayList<TimedPowerUps>();
-		this.playerSpawn();
 		this.enemytanks = new ArrayList<EnemyTankBase>();
-		this.enemySpawn();
 		this.levels = levels;
 		this.currentLevelindex = 5;
 		this.score = 0;
-		this.gameState = GameState.MENU;
+		this.scoreManager = new ScoreManager();
+		this.nameAsked = false;
+		this.startNewGame();
 	}
 
+	public void startNewGame()
+	{
+		this.animatedModels.clear();
+		this.models.clear();
+		this.bullets.clear();
+		this.powerUps.clear();
+		this.activeEffects.clear();
+		this.enemytanks = new ArrayList<EnemyTankBase>();
+		maxEnemy = 20;
+		active_enemy_nbr = 0;
+		player_max_health = 3;
+		pinkTanknbr = 0;
+		whiteTanknbr = 0;
+		greenTanknbr = 0;
+		powerUpStarMax = 3;
+		this.currentLevelindex = 5;
+		this.score = 0;
+		this.isFrozen = false;
+		this.isInvincible = false;
+		this.powerUp13Spawned = false;
+		this.powerUp7Spawned = false;
+		this.nameAsked = false;
+		this.gameState = GameState.PLAYING;
+		this.playerSpawn();
+		this.enemySpawn();
+	}
 
 	public void enemySpawn()
 	{	
@@ -115,7 +153,7 @@ public class GameEngine {
 	public void playerSpawn()
 	{
 		if(player_max_health == 0)
-			this.gameState = GameState.GAME_OVER; //TODO when game is over. UI gonna change
+			this.gameState = GameState.GAME_OVER;
 		if(player_max_health > 0)
 		{
 			animatedModels.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader, true));
@@ -126,12 +164,26 @@ public class GameEngine {
 
 	public void update()
 	{			
+		if(this.gameState == GameState.GAME_OVER)
+		{
+			if(!this.nameAsked)
+			{
+				this.nameAsked = true;
+				this.askNameAndSaveScore();
+			}
+			return;
+		}
 		if(levels[currentLevelindex].isbaseDestroyed())
 			this.gameState = GameState.GAME_OVER;
-		if(maxEnemy == 0 && active_enemy_nbr == 0)
+		else if(maxEnemy == 0 && active_enemy_nbr == 0)
 			this.gameState = GameState.LEVEL_COMPLETE;
 		else
 			this.gameState = GameState.PLAYING;
+		if(this.gameState == GameState.GAME_OVER && !this.nameAsked)
+		{
+			this.nameAsked = true;
+			this.askNameAndSaveScore();
+		}
 
 		if(this.gameState == GameState.PLAYING)
 		{
@@ -291,7 +343,6 @@ public class GameEngine {
 	}
 
 
-
 	public void ManagePowerUps()
 	{
 		int remainingEnemies = maxEnemy + active_enemy_nbr;
@@ -344,8 +395,6 @@ public class GameEngine {
 			}
 		}
 	}
-
-
 
 	public void updateBullets()
 	{
@@ -505,12 +554,13 @@ public class GameEngine {
 
 	public void draw(Graphics g)
 	{
-		if(this.gameState == GameState.GAME_OVER)
-			this.drawOver(g);
-		else if(this.gameState == GameState.PAUSED)
+		if(this.gameState == GameState.PAUSED)
 			this.drawPause(g);
-		if(this.gameState == GameState.LEVEL_COMPLETE)
+		else if(this.gameState == GameState.LEVEL_COMPLETE)
+		{
 			this.drawLevelComplete(g);
+			this.currentLevelindex++;
+		}
 		else if(this.gameState == GameState.PLAYING)
 		{
 			levels[currentLevelindex].draw(g);
@@ -539,6 +589,11 @@ public class GameEngine {
 		}
 	}
 
+	public GameState getGameState()
+	{
+		return gameState;
+	}
+
 	public void togglePause()
 	{
 		if(this.gameState == GameState.PAUSED)
@@ -547,9 +602,17 @@ public class GameEngine {
 			this.gameState = GameState.PAUSED;
 	}
 
-	public void drawOver(Graphics g)
+	public void askNameAndSaveScore() 
 	{
+		String name = JOptionPane.showInputDialog(null,"Enter your name:","Game Over",JOptionPane.PLAIN_MESSAGE);
+		if (name == null || name.trim().isEmpty())
+			name = "Unknown";
 
+		LocalDate currentDate = LocalDate.now();
+		LocalTime currentTime = LocalTime.now();
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		ScoreRecord record = new ScoreRecord(name.trim(),currentDate.toString(),currentTime.format(timeFormatter),score);
+		scoreManager.saveScore(record);
 	}
 
 	public void drawPause(Graphics g)
@@ -653,13 +716,9 @@ public class GameEngine {
 		int tankImgX = 385;
 
 		this.drawNumber(g, ptsValue, ptsNumX, y + 10, digitW, digitH);
-
 		g.drawImage(iLoader.getPtsImage(), ptsImgX, y + 5, 60, 30, null);
-
 		this.drawNumber(g, count, countNumX, y + 10, digitW, digitH);
-
 		g.drawImage(iLoader.getArrowImage(), arrowX, y + 15, 30, 15, null);
-
 		g.drawImage(iLoader.getEntitySprite2(spriteRow, spriteCol), tankImgX, y, 48, 48, null);
 	}
 

@@ -4,7 +4,6 @@ public enum GameState{
 
 	PLAYING(1),
 	PAUSED(2),
-	MENU(3),
 	GAME_OVER(4),
 	LEVEL_COMPLETE(5);
 

@@ -72,7 +72,7 @@ public class ImageLoader {
 		this.ptsImage = loadImage("/resources/images/pts.png");
 		this.totalImage = loadImage("/resources/images/total.png");
 		this.totalScoreImage = loadImage("/resources/images/total_score.png");
-		this.paused_textImage = loadImage("/resources/images/paused.png");
+		this.paused_textImage = loadImage("/resources/images/pause2.png");
 	}
 
 	

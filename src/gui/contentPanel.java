@@ -9,8 +9,6 @@ import java.awt.BorderLayout;
 
 public class contentPanel extends JPanel {
 
-
-
 	public contentPanel()
 	{
         setLayout(new BorderLayout(10, 0)); // GamePanel ile SidePanel arası 10 px

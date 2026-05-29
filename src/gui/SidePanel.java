@@ -4,6 +4,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import engine.GameEngine;
 import util.ImageLoader;
 
@@ -53,7 +55,13 @@ public class SidePanel extends JPanel {
 		pauseButton.setOpaque(false); //set absolute opaque
 		pauseButton.setFocusable(false); // WASD can be interrupted by this so even if button pressed WASD will gonna work properly
 		pauseButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); //when get on the button cursor gonna change to hand cursor 
-		pauseButton.addActionListener(e -> {engine.togglePause();gamePanel.requestFocusInWindow();}); //do unpause and pause also set focus on gamepanel so player can play when unpaused
+		pauseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				engine.togglePause();
+				gamePanel.requestFocusInWindow();
+			}
+		}); //do unpause and pause also set focus on gamepanel so player can play when unpaused
 		add(pauseButton); //adding button to sidePanel
 	}
 
