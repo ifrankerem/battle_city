@@ -25,7 +25,7 @@ public class EditorSidePanel extends JPanel {
 	private BufferedImage[] tileImages;
 	
 
-	public EditorSidePanel(GameEngine engine,ImageLoader iLoader,GamePanel gamePanel)
+	public EditorSidePanel(GameEngine engine,ImageLoader iLoader,MapEditorPanel mapEditorPanel, MainMenuPanel mainMenuPanel)
 	{
 		this.setPreferredSize(new Dimension(SIDEPANEL_WIDTH,GamePanel.GAME_HEIGHT));
 		setBackground(Color.decode("#636363"));
@@ -33,7 +33,7 @@ public class EditorSidePanel extends JPanel {
 		this.iLoader = iLoader;
 		this.engine = engine;
 		this.initTileImages();
-		this.initplayButton(gamePanel);
+		this.initplayButton(mapEditorPanel, mainMenuPanel);
 	}
 
 	private void initTileImages()
@@ -48,7 +48,7 @@ public class EditorSidePanel extends JPanel {
 		};
 	}
 
-	private void initplayButton(GamePanel gamePanel)
+	private void initplayButton(MapEditorPanel mapEditorPanel, MainMenuPanel mainMenuPanel)
 	{
 		int btnSize = 70;
 		Image scaledIcon = iLoader.getPlayImage().getScaledInstance(btnSize, btnSize, Image.SCALE_FAST);
@@ -66,8 +66,8 @@ public class EditorSidePanel extends JPanel {
 		playButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				engine.togglePause();
-				gamePanel.requestFocusInWindow();
+				engine.playCustomLevel(mapEditorPanel.getEmptyLevel().copy());
+				mainMenuPanel.showGame();
 			}
 		}); //do unpause and pause also set focus on gamepanel so player can play when unpaused
 		add(playButton); //adding button to sidePanel

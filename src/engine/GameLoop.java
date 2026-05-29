@@ -36,22 +36,21 @@ public class GameLoop implements Runnable{
 
 	public void run()
 	{
-		double drawInterval = 1_000_000_000.0/FPS; // 1 second / frame
-		double nextDrawTıme = System.nanoTime() + drawInterval;
-		double lastCheckTıme = System.nanoTime();
+		long drawInterval = 1_000_000_000L/FPS; // 1 second / frame
+		long nextDrawTime = System.nanoTime() + drawInterval;
 		//int frameCounter = 0;
 		while(game != null)
 		{
 			if(!engine.get_isPaused())
 			{
 				engine.update();
-				engine.getCurrentLevel().updateAnimation();
+				engine.updateCurrentLevelAnimation();
 			}
 			if(engine.getGameState() == GameState.GAME_OVER && !gameOverCardShown)
 			{
+				gameOverCardShown = true;
 				cards.show(rootPanel, "GAME_OVER");
 				windowMain.pack();
-				gameOverCardShown = true;
 			}
 			else if(engine.getGameState() == GameState.PLAYING)
 			{
@@ -66,17 +65,18 @@ public class GameLoop implements Runnable{
 			// 	frameCounter = 0;
 			// 	lastCheckTıme = System.nanoTime();
 			// }
-			double remainingTime = nextDrawTıme - System.nanoTime();
-			if(remainingTime < 0)
-				remainingTime = 0; //there is no time left so set to 0
+			long remainingTime = nextDrawTime - System.nanoTime();
 			try{
-				game.sleep((long)(remainingTime / 1000000)); // takes long so casting it
+				if(remainingTime > 0)
+					Thread.sleep(remainingTime / 1000000);
+				else
+					nextDrawTime = System.nanoTime();
 			}
 			catch(InterruptedException e)
 			{
 				//ı set it to 0 so there is no catch error here
 			}
-			nextDrawTıme = nextDrawTıme + drawInterval;
+			nextDrawTime = nextDrawTime + drawInterval;
 		}
 	}
 	

@@ -12,6 +12,9 @@ public class ImageLoader {
 	private static final int SPRITE_SIZE = 16;
 	private BufferedImage spriteSheet;
 	private BufferedImage spriteSheet2;
+	private BufferedImage[][] waterSprites;
+	private BufferedImage[][] entitySprites;
+	private BufferedImage[][] cellSprites;
 	private BufferedImage bullet_north;
 	private BufferedImage bullet_east;
 	private BufferedImage bullet_west;
@@ -46,6 +49,7 @@ public class ImageLoader {
 	{
 		this.spriteSheet = loadImage("/resources/images/spritesheet1.png");
 		this.spriteSheet2 = loadImage("/resources/images/spritesheet2.png");
+		this.loadSpriteCaches();
 		this.bullet_north = loadImage("/resources/images/bullet_north.png");
 		this.bullet_east = loadImage("/resources/images/bullet_east.png");
 		this.bullet_west = loadImage("/resources/images/bullet_west.png");
@@ -95,6 +99,31 @@ public class ImageLoader {
 		}
 	}
 
+	public void loadSpriteCaches()
+	{
+		this.waterSprites = loadSpriteSheet(spriteSheet, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE - 1, SPRITE_SIZE - 1);
+		this.entitySprites = loadSpriteSheet(spriteSheet2, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE - 1, SPRITE_SIZE - 1);
+		this.cellSprites = loadSpriteSheet(spriteSheet2, 8, 8, 8, 8);
+	}
+
+	private BufferedImage[][] loadSpriteSheet(BufferedImage sheet, int cellWidth, int cellHeight, int spriteWidth, int spriteHeight)
+	{
+		int rowCount = sheet.getHeight() / cellHeight;
+		int colCount = sheet.getWidth() / cellWidth;
+		BufferedImage[][] sprites = new BufferedImage[rowCount][colCount];
+
+		for(int row = 0; row < rowCount; row++)
+		{
+			for(int col = 0; col < colCount; col++)
+			{
+				int x = col * cellWidth;
+				int y = row * cellHeight;
+				sprites[row][col] = sheet.getSubimage(x, y, spriteWidth, spriteHeight);
+			}
+		}
+		return sprites;
+	}
+
 	public void loadDigits()
 	{
 		// numbers_text.png is 41x17 with 1px border on all sides and 1px separator row
@@ -132,27 +161,19 @@ public class ImageLoader {
 	}
 
     public BufferedImage getWaterSprite(int row, int col) {
-        int x = col * SPRITE_SIZE;
-        int y = row * SPRITE_SIZE;
-        return spriteSheet.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
+        return waterSprites[row][col];
     }
 
     public BufferedImage getEntitySprite(int row, int col) {
-        int x = col * SPRITE_SIZE;
-        int y = row * SPRITE_SIZE;
-        return spriteSheet2.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
+        return entitySprites[row][col];
     }
 
     public BufferedImage getCellSprite(int row, int col) {
-        int x = col * 8;
-        int y = row * 8;
-        return spriteSheet2.getSubimage(x, y, 8, 8);
+        return cellSprites[row][col];
     }
 
     public BufferedImage getEntitySprite2(int row, int col) {
-        int x = col * SPRITE_SIZE;
-        int y = row * SPRITE_SIZE;
-        return spriteSheet2.getSubimage(x, y, SPRITE_SIZE-1, SPRITE_SIZE-1);
+        return entitySprites[row][col];
     }
 
 	public BufferedImage getSprite(int row, int col) {

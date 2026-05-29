@@ -10,13 +10,14 @@ import tile.SteelWall;
 import tile.Tile;
 import tile.Water;
 import util.TileEnum;
-import engine.GameEngine;
 import java.awt.Graphics;
 
 
 public class Level {
 
 	private Tile[][] tiles;
+	private static final int[][] ENEMY_SPAWN_COORDS = {{0, 0}, {GamePanel.GAME_WIDTH / 2, 0}, {GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE, 0}};
+	private static final int[] PLAYER_SPAWN_COORDS = {220, 570};
 	int[][] baseWallPositions = {{23, 11}, {23, 12}, {23, 13}, {23, 14},{24, 11},{24, 14},{25, 11},{25, 14}};
 
 	public Level(Tile[][] tiles)
@@ -26,6 +27,42 @@ public class Level {
 
 	public Tile[][] getTiles() {
 		return tiles;
+	}
+
+	public Level copy()
+	{
+		Tile[][] copiedTiles = new Tile[GamePanel.MAP_ROWS][GamePanel.MAP_COLS];
+
+		for(int row = 0; row < GamePanel.MAP_ROWS; row++)
+		{
+			for(int col = 0; col < GamePanel.MAP_COLS; col++)
+			{
+				copiedTiles[row][col] = copyTile(tiles[row][col]);
+			}
+		}
+
+		return new Level(copiedTiles);
+	}
+
+	private Tile copyTile(Tile tile)
+	{
+		double x = tile.getX();
+		double y = tile.getY();
+
+		if(tile instanceof Base)
+			return new Base(x, y, tile.getImageLoader());
+		if(tile instanceof BrickWall)
+			return new BrickWall(x, y, tile.getImageLoader());
+		if(tile instanceof Bush)
+			return new Bush(x, y, tile.getImageLoader());
+		if(tile instanceof GrayRoad)
+			return new GrayRoad(x, y, tile.getImageLoader());
+		if(tile instanceof SteelWall)
+			return new SteelWall(x, y, tile.getImageLoader());
+		if(tile instanceof Water)
+			return new Water(x, y, tile.getImageLoader());
+
+		return new EmptyTile(x, y, tile.getImageLoader());
 	}
 
 	public void draw(Graphics g)
@@ -176,13 +213,13 @@ public class Level {
 		if((row == 24 || row == 25) && (col == 12 || col == 13)) // base is always in these
 			return false;
 
-		for(int i = 0; i < GameEngine.EnemyBaseSpawnCords.length; i++)
+		for(int i = 0; i < ENEMY_SPAWN_COORDS.length; i++)
 		{
-			if(isSpawnCell(row, col, GameEngine.EnemyBaseSpawnCords[i][0], GameEngine.EnemyBaseSpawnCords[i][1]))
+			if(isSpawnCell(row, col, ENEMY_SPAWN_COORDS[i][0], ENEMY_SPAWN_COORDS[i][1]))
 				return false;
 		}
 
-		if(isSpawnCell(row, col, GameEngine.PlayerBaseSpawnCords[0], GameEngine.PlayerBaseSpawnCords[1]))
+		if(isSpawnCell(row, col, PLAYER_SPAWN_COORDS[0], PLAYER_SPAWN_COORDS[1]))
 			return false;
 
 		return true;

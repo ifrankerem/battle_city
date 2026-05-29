@@ -9,7 +9,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import level.Level;
 import level.LevelLoader;
 import util.ImageLoader;
@@ -116,10 +115,10 @@ public class MapEditorPanel extends JPanel implements KeyListener{
 		if (!emptyLevel.isInsideMap(row, col))
 			return;
 
-		if (SwingUtilities.isLeftMouseButton(e)) {
+		if (e.getButton() == MouseEvent.BUTTON1) {
 			emptyLevel.setTile(row, col, selectedTileType);
 		}
-		else if (SwingUtilities.isRightMouseButton(e)) {
+		else if (e.getButton() == MouseEvent.BUTTON3) {
 			emptyLevel.setTile(row, col, selectedTileType);
 		}
 		repaint();
@@ -135,6 +134,10 @@ public class MapEditorPanel extends JPanel implements KeyListener{
 			emptyLevel.draw(g);
 			emptyLevel.topdraw(g);
 		}
+	}
+
+	public Level getEmptyLevel() {
+		return emptyLevel;
 	}
 
 }

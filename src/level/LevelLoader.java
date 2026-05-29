@@ -19,13 +19,14 @@ import util.ImageLoader;
 
 public class LevelLoader {
 
+	private static final int LEVEL_COUNT = 37;
 	private Level levels[];
 	private ImageLoader iLoader;
 
 	public LevelLoader(ImageLoader iLoader)
 	{
 		this.iLoader = iLoader;
-		this.levels = new Level[36];
+		this.levels = new Level[LEVEL_COUNT];
 	}	
 
 	private String buildStagePath(int stageNumber) {
@@ -43,69 +44,56 @@ public class LevelLoader {
 			for(int row = 0 ; row < GamePanel.MAP_ROWS ; row++)
 			{
 				String line = reader.readLine(); // get lines from txt
+				if(line == null)
+					throw new RuntimeException("Missing row " + row + " in " + path);
+				if(line.length() < GamePanel.MAP_COLS)
+					throw new RuntimeException("Row " + row + " is too short in " + path);
 				for(int col = 0; col < GamePanel.MAP_COLS; col++)
 				{
 					char code = line.charAt(col);
-					switch (code){
-						case '0':
-						{
-							tile[row][col] = new EmptyTile(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-						case '1':
-						{
-							tile[row][col] = new BrickWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-						case '2':
-						{
-							tile[row][col] = new SteelWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-						case '3':
-						{
-							tile[row][col] = new Bush(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-						case '4':
-						{
-							tile[row][col] = new Water(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-						case '5':
-						{
-							tile[row][col] = new Base(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-						case '6':
-						{
-							tile[row][col] = new GrayRoad(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-							break;
-						}
-
-					}
+					tile[row][col] = createTile(code, row, col, path);
 				}
 			}
+			reader.close();
 			return new Level(tile);
 		}
 		catch(Exception e)
 		{
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Error on level loading!", JOptionPane.WARNING_MESSAGE);
-			return null;
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Tile createTile(char code, int row, int col, String path)
+	{
+		int x = col * GamePanel.MAP_CELL_SIZE;
+		int y = row * GamePanel.MAP_CELL_SIZE;
+
+		switch (code){
+			case '0':
+				return new EmptyTile(x, y, iLoader);
+			case '1':
+				return new BrickWall(x, y, iLoader);
+			case '2':
+				return new SteelWall(x, y, iLoader);
+			case '3':
+				return new Bush(x, y, iLoader);
+			case '4':
+				return new Water(x, y, iLoader);
+			case '5':
+				return new Base(x, y, iLoader);
+			case '6':
+				return new GrayRoad(x, y, iLoader);
+			default:
+				throw new RuntimeException("Unknown tile code '" + code + "' at row " + row + ", col " + col + " in " + path);
 		}
 	}
 
 	public void loadMaps()
 	{
-		try{
-			for(int i = 0; i < 36 ; i++)
-			{
-				levels[i] = loadMap(buildStagePath(i));
-			}
-		}
-		catch(Exception e)
+		for(int i = 0; i < LEVEL_COUNT ; i++)
 		{
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Error on level loading!", JOptionPane.WARNING_MESSAGE);
+			levels[i] = loadMap(buildStagePath(i));
 		}
 	}
 

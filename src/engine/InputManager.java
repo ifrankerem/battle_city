@@ -6,11 +6,11 @@ import java.awt.event.KeyListener;
 public class InputManager implements KeyListener {
 
 
-	public boolean up;
-	public boolean down;
-	public boolean right;
-	public boolean left;
-	public boolean space;
+	private boolean up;
+	private boolean down;
+	private boolean right;
+	private boolean left;
+	private boolean space;
 
 
 	public InputManager()
@@ -18,7 +18,7 @@ public class InputManager implements KeyListener {
 		this.reset();
 	}
 
-	public void reset()
+	public synchronized void reset()
 	{
 		this.up = false;
 		this.down = false;
@@ -27,7 +27,7 @@ public class InputManager implements KeyListener {
 		this.space = false;
 	}
 
-	public void keyPressed(KeyEvent e)
+	public synchronized void keyPressed(KeyEvent e)
 	{
 		//System.out.println("KEY PRESSED: " + e.getKeyCode() + " (" + KeyEvent.getKeyText(e.getKeyCode()) + ")");
 		switch (e.getKeyCode()) {
@@ -64,9 +64,9 @@ public class InputManager implements KeyListener {
 		}
 	}
 	
-	public void keyReleased(KeyEvent e)
+	public synchronized void keyReleased(KeyEvent e)
 	{
-				switch (e.getKeyCode()) {
+		switch (e.getKeyCode()) {
 			case KeyEvent.VK_W :
 				{
 					this.up = false;
@@ -100,7 +100,27 @@ public class InputManager implements KeyListener {
 		//dont needed rn
 	}
 
-	public boolean get_space()
+	public synchronized boolean get_up()
+	{
+		return up;
+	}
+
+	public synchronized boolean get_down()
+	{
+		return down;
+	}
+
+	public synchronized boolean get_right()
+	{
+		return right;
+	}
+
+	public synchronized boolean get_left()
+	{
+		return left;
+	}
+
+	public synchronized boolean get_space()
 	{
 		return space;
 	}

@@ -42,12 +42,12 @@ public class SidePanel extends JPanel {
 
 	private void initPauseButton(GamePanel gamePanel)
 	{
-		int btnSize = 96;
-		Image scaledIcon = iLoader.getPauseImage().getScaledInstance(btnSize, btnSize, Image.SCALE_FAST); //makin png scaled to 96x96
+		int btnSize = 70;
+		Image scaledIcon = iLoader.getPauseImage().getScaledInstance(btnSize, btnSize, Image.SCALE_FAST);
 		ImageIcon pauseIcon = new ImageIcon(scaledIcon); //Jbuton wants button
 		pauseButton = new JButton(pauseIcon);
 		int btnX = (SIDEPANEL_WIDTH - btnSize) / 2;
-		int btnY = GamePanel.GAME_HEIGHT - 130;
+		int btnY = GamePanel.GAME_HEIGHT - btnSize - 24;
 		pauseButton.setBounds(btnX, btnY, btnSize, btnSize);
 		pauseButton.setBorderPainted(false); //disable default borders
 		pauseButton.setContentAreaFilled(false); //disable default background color

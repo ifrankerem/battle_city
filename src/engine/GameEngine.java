@@ -52,8 +52,8 @@ public class GameEngine {
 	private ArrayList <Model> models;
 	private ArrayList<PowerUp> powerUps;
 	private ArrayList<TimedPowerUps> activeEffects;
-	public static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
-	public static final int[] PlayerBaseSpawnCords = {220,570};
+	private static final int[][] ENEMY_SPAWN_COORDS = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
+	private static final int[] PLAYER_SPAWN_COORDS = {220,570};
 	private static final int START_LEVEL_INDEX = 0;
 	private static final int MAX_ENEMY_PER_LEVEL = 5;
 	private static final int PLAYER_START_HEALTH = 10; //TODO end of this do 3
@@ -73,6 +73,7 @@ public class GameEngine {
 	private int starPowerCounter;
 	private ScoreManager scoreManager;
 	private boolean nameAsked;
+	private boolean customLevelMode;
 	private int levelCompleteCounter;
 	private int stageLoadCounter;
 	private static final int LEVEL_COMPLETE_DELAY = 180;
@@ -93,15 +94,29 @@ public class GameEngine {
 		this.score = 0;
 		this.scoreManager = new ScoreManager();
 		this.nameAsked = false;
+		this.customLevelMode = false;
 		this.startNewGame();
 	}
 
-	public void startNewGame()
+	public synchronized void startNewGame()
 	{
 		iManager.reset();
 		LevelLoader levelLoader = new LevelLoader(iLoader);
 		levelLoader.loadMaps();
 		this.levels = levelLoader.getLevels();
+		this.resetLevelRuntime();
+		player_max_health = PLAYER_START_HEALTH;
+		this.currentLevelindex = START_LEVEL_INDEX;
+		this.score = 0;
+		this.nameAsked = false;
+		this.customLevelMode = false;
+		this.gameState = GameState.PLAYING;
+		this.playerSpawn();
+		this.enemySpawn();
+	}
+
+	private void resetLevelRuntime()
+	{
 		this.animatedModels.clear();
 		this.models.clear();
 		this.bullets.clear();
@@ -110,24 +125,17 @@ public class GameEngine {
 		this.enemytanks = new ArrayList<EnemyTankBase>();
 		maxEnemy = MAX_ENEMY_PER_LEVEL;
 		active_enemy_nbr = 0;
-		player_max_health = PLAYER_START_HEALTH;
 		pinkTanknbr = 0;
 		whiteTanknbr = 0;
 		greenTanknbr = 0;
 		powerUpStarMax = 3;
-		this.currentLevelindex = START_LEVEL_INDEX;
-		this.score = 0;
 		this.isFrozen = false;
 		this.isInvincible = false;
 		this.powerUp13Spawned = false;
 		this.powerUp7Spawned = false;
 		this.starPowerCounter = 0;
-		this.nameAsked = false;
 		this.levelCompleteCounter = 0;
 		this.stageLoadCounter = 0;
-		this.gameState = GameState.PLAYING;
-		this.playerSpawn();
-		this.enemySpawn();
 	}
 
 	private void prepareNextStage()
@@ -139,24 +147,7 @@ public class GameEngine {
 			return;
 		}
 
-		this.bullets.clear();
-		this.powerUps.clear();
-		this.activeEffects.clear();
-		this.animatedModels.clear();
-		this.models.clear();
-		this.enemytanks = new ArrayList<EnemyTankBase>();
-		maxEnemy = MAX_ENEMY_PER_LEVEL;
-		active_enemy_nbr = 0;
-		pinkTanknbr = 0;
-		whiteTanknbr = 0;
-		greenTanknbr = 0;
-		powerUpStarMax = 3;
-		this.isFrozen = false;
-		this.isInvincible = false;
-		this.powerUp13Spawned = false;
-		this.powerUp7Spawned = false;
-		this.starPowerCounter = 0;
-		this.stageLoadCounter = 0;
+		this.resetLevelRuntime();
 		this.playerSpawn();
 		this.enemySpawn();
 		this.gameState = GameState.STAGE_LOAD;
@@ -169,22 +160,22 @@ public class GameEngine {
 		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0 && maxEnemy > 0)
 		{
 			int random = (int)(Math.random() * 3);
-			animatedModels.add(new Spawn(EnemyBaseSpawnCords[random][0] - 5, EnemyBaseSpawnCords[random][1] - 5, iLoader,false));
+			animatedModels.add(new Spawn(ENEMY_SPAWN_COORDS[random][0] - 5, ENEMY_SPAWN_COORDS[random][1] - 5, iLoader,false));
 			if(random == 0)
 			{
-				EnemyTankWhite enemy = new EnemyTankWhite(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				EnemyTankWhite enemy = new EnemyTankWhite(ENEMY_SPAWN_COORDS[random][0],ENEMY_SPAWN_COORDS[random][1] ,2,Direction.SOUTH,iLoader);
 				this.whiteTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else if(random == 1)
 			{
-				EnemyTankGreen enemy = new EnemyTankGreen(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				EnemyTankGreen enemy = new EnemyTankGreen(ENEMY_SPAWN_COORDS[random][0],ENEMY_SPAWN_COORDS[random][1] ,2,Direction.SOUTH,iLoader);
 				this.greenTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else
 			{
-				EnemyTankPink enemy = new EnemyTankPink(EnemyBaseSpawnCords[random][0],EnemyBaseSpawnCords[random][1] ,2,Direction.SOUTH,iLoader);
+				EnemyTankPink enemy = new EnemyTankPink(ENEMY_SPAWN_COORDS[random][0],ENEMY_SPAWN_COORDS[random][1] ,2,Direction.SOUTH,iLoader);
 				this.pinkTanknbr++;
 				enemytanks.add(enemy);
 			}
@@ -199,38 +190,58 @@ public class GameEngine {
 			this.gameState = GameState.GAME_OVER;
 		if(player_max_health > 0)
 		{
-			animatedModels.add(new Spawn(PlayerBaseSpawnCords[0] - 5, PlayerBaseSpawnCords[1] - 5, iLoader, true));
+			animatedModels.add(new Spawn(PLAYER_SPAWN_COORDS[0] - 5, PLAYER_SPAWN_COORDS[1] - 5, iLoader, true));
 			this.starPowerCounter = 0;
-			this.player = new PlayerTank(PlayerBaseSpawnCords[0], PlayerBaseSpawnCords[1], 3.0, Direction.NORTH, iManager,iLoader);
+			this.player = new PlayerTank(PLAYER_SPAWN_COORDS[0], PLAYER_SPAWN_COORDS[1], 3.0, Direction.NORTH, iManager,iLoader);
 		}
 
 	}
 
 	public void update()
+	{
+		boolean shouldAskName;
+
+		synchronized(this)
+		{
+			shouldAskName = updateGameObjects();
+		}
+
+		if(shouldAskName)
+			this.askNameAndSaveScore();
+	}
+
+	private boolean updateGameObjects()
 	{			
 		if(this.gameState == GameState.GAME_OVER)
 		{
 			if(!this.nameAsked)
 			{
 				this.nameAsked = true;
-				this.askNameAndSaveScore();
+				return true;
 			}
-			return;
+			return false;
 		}
 		if(this.gameState == GameState.LEVEL_COMPLETE)
 		{
 			this.levelCompleteCounter++;
 			if(this.levelCompleteCounter >= LEVEL_COMPLETE_DELAY)
-				this.prepareNextStage();
-			return;
+			{
+				if(this.customLevelMode)
+					this.gameState = GameState.GAME_OVER;
+				else
+					this.prepareNextStage();
+			}
+			return false;
 		}
+
 		if(this.gameState == GameState.STAGE_LOAD)
 		{
 			this.stageLoadCounter++;
 			if(this.stageLoadCounter >= STAGE_LOAD_DELAY)
 				this.gameState = GameState.PLAYING;
-			return;
+			return false;
 		}
+
 		if(levels[currentLevelindex].isbaseDestroyed())
 			this.gameState = GameState.GAME_OVER;
 		else if(maxEnemy == 0 && active_enemy_nbr == 0)
@@ -240,10 +251,11 @@ public class GameEngine {
 		}
 		else
 			this.gameState = GameState.PLAYING;
+
 		if(this.gameState == GameState.GAME_OVER && !this.nameAsked)
 		{
 			this.nameAsked = true;
-			this.askNameAndSaveScore();
+			return true;
 		}
 
 		if(this.gameState == GameState.PLAYING)
@@ -275,6 +287,8 @@ public class GameEngine {
 				it.next().updateMovement(levels[currentLevelindex]);
 			this.updateAnimatedModels();
 		}
+
+		return false;
 	}
 
 
@@ -286,19 +300,19 @@ public class GameEngine {
 			{
 				for(EnemyTankBase curr : enemytanks)
 				{
-						if(bullet.getHitbox().intersects(curr.getHitbox()) && curr.get_isAlive())
+					if(bullet.getHitbox().intersects(curr.getHitbox()) && curr.get_isAlive())
+					{
+						curr.getDamage();
+						bullet.setActive(false);
+						if(curr.get_isAlive() == false)
 						{
-							curr.getDamage();
-							bullet.setActive(false);
-							if(curr.get_isAlive() == false)
-							{
-								score += curr.getScore();
-								active_enemy_nbr--;
-							}
-							break; // Stop checking this bullet against other enemies
+							score += curr.getScore();
+							active_enemy_nbr--;
 						}
+						break; // Stop checking this bullet against other enemies
 					}
 				}
+			}
 		}
 	}
 
@@ -390,13 +404,19 @@ public class GameEngine {
 
 	private void removeShieldEffects()
 	{
+		this.removeShieldEffects(true);
+	}
+
+	private void removeShieldEffects(boolean removeInvincibleModels)
+	{
 		Iterator<TimedPowerUps> iterator = activeEffects.iterator();
 		while(iterator.hasNext())
 		{
 			if(iterator.next() instanceof ShieldPowerUp)
 				iterator.remove();
 		}
-		this.removeInvincibleModels();
+		if(removeInvincibleModels)
+			this.removeInvincibleModels();
 		this.isInvincible = false;
 	}
 
@@ -542,6 +562,7 @@ public class GameEngine {
 	public void updateAnimatedModels()
 	{
 		AnimatedModel pendingAnimatedModel = null;
+		boolean pendingRemoveInvincibleModels = false;
 		Iterator <AnimatedModel> it = animatedModels.iterator();
 		while(it.hasNext())
 		{
@@ -555,7 +576,8 @@ public class GameEngine {
 					if(spawn.isPlayerSpawn())
 					{
 						player.setSpawn(true);
-						this.removeShieldEffects();
+						this.removeShieldEffects(false);
+						pendingRemoveInvincibleModels = true;
 						ShieldPowerUp spawnShield = new ShieldPowerUp(player.getX(), player.getY(), iLoader, 240);
 						spawnShield.activateEffect(this);
 						activeEffects.add(spawnShield);
@@ -567,6 +589,8 @@ public class GameEngine {
 				it.remove();
 			}
 		}
+		if(pendingRemoveInvincibleModels)
+			this.removeInvincibleModels();
 		if(pendingAnimatedModel != null)
 			animatedModels.add(pendingAnimatedModel);
 	}
@@ -583,7 +607,7 @@ public class GameEngine {
 		}
 	}
 
-	public boolean get_isPaused()
+	public synchronized boolean get_isPaused()
 	{
 		return(gameState == GameState.PAUSED);
 	}
@@ -596,9 +620,14 @@ public class GameEngine {
 		return iManager;
 	}
 
-	public Level getCurrentLevel()
+	public synchronized Level getCurrentLevel()
 	{
 		return levels[currentLevelindex];
+	}
+
+	public synchronized void updateCurrentLevelAnimation()
+	{
+		levels[currentLevelindex].updateAnimation();
 	}
 
 	public int getMaxEnemy()
@@ -642,7 +671,7 @@ public class GameEngine {
 		active_enemy_nbr--;
 	}
 
-	public void draw(Graphics g)
+	public synchronized void draw(Graphics g)
 	{
 		if(this.gameState == GameState.PAUSED)
 			this.drawPause(g);
@@ -678,12 +707,12 @@ public class GameEngine {
 		}
 	}
 
-	public GameState getGameState()
+	public synchronized GameState getGameState()
 	{
 		return gameState;
 	}
 
-	public void togglePause()
+	public synchronized void togglePause()
 	{
 		if(this.gameState == GameState.PAUSED)
 			this.gameState = GameState.PLAYING;
@@ -702,6 +731,21 @@ public class GameEngine {
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		ScoreRecord record = new ScoreRecord(name.trim(),currentDate.toString(),currentTime.format(timeFormatter),score);
 		scoreManager.saveScore(record);
+	}
+
+	public synchronized void playCustomLevel(Level customLevel)
+	{
+		iManager.reset();
+		this.levels = new Level[] { customLevel };
+		this.resetLevelRuntime();
+		this.currentLevelindex = 0;
+		this.player_max_health = PLAYER_START_HEALTH;
+		this.score = 0;
+		this.nameAsked = false;
+		this.customLevelMode = true;
+		this.gameState = GameState.PLAYING;
+		this.playerSpawn();
+		this.enemySpawn();
 	}
 
 	public void drawPause(Graphics g)

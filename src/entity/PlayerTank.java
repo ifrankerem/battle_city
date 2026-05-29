@@ -26,32 +26,32 @@ public class PlayerTank extends Tank{
 	public void updateMovement(Level currentLevel,ArrayList <Bullet> bullets)
 	{
 		double nextX = x;
-		double nextY = y;
-		this.updateShootCoolDown();
-		if(this.isSpawn)
-		{
-		if(inputs.up || inputs.down || inputs.left || inputs.right) // there will be no animation while player standing still
-		{			
-				if(inputs.up)
-				{
-					dir = Direction.NORTH;
-					nextY -= speed;
-				}
-				else if(inputs.down)
-				{
-					dir = Direction.SOUTH;
-					nextY += speed;
-				}
-				else if(inputs.right)
-				{
-					dir = Direction.EAST;
-					nextX += speed;
-				}
-				else if(inputs.left)
-				{
-					dir = Direction.WEST;
-					nextX -= speed;
-				}
+			double nextY = y;
+			this.updateShootCoolDown();
+			if(this.isSpawn)
+			{
+			if(inputs.get_up() || inputs.get_down() || inputs.get_left() || inputs.get_right()) // there will be no animation while player standing still
+			{			
+					if(inputs.get_up())
+					{
+						dir = Direction.NORTH;
+						nextY -= speed;
+					}
+					else if(inputs.get_down())
+					{
+						dir = Direction.SOUTH;
+						nextY += speed;
+					}
+					else if(inputs.get_right())
+					{
+						dir = Direction.EAST;
+						nextX += speed;
+					}
+					else if(inputs.get_left())
+					{
+						dir = Direction.WEST;
+						nextX -= speed;
+					}
 				if(nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width)) && currentLevel.hitboxControl(nextX, nextY, this.hitbox.width, this.hitbox.height))
 				{
 					this.y = nextY;
@@ -68,7 +68,7 @@ public class PlayerTank extends Tank{
 					this.SpriteCounter = 0;
 				}
 		}
-			if(inputs.space && this.canShoot() && this.countBullets(bullets) < this.maxBulletCount)
+				if(inputs.get_space() && this.canShoot() && this.countBullets(bullets) < this.maxBulletCount)
 			{
 				this.shoot();
 				this.resetShootCoolDown();

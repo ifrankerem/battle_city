@@ -35,11 +35,11 @@ public class Main {
 		contentP.add(gameWindow,BorderLayout.CENTER);
 		SidePanel sidePanelWindow = new SidePanel(engine,iLoader,gameWindow);
 		contentP.add(sidePanelWindow,BorderLayout.EAST);
+		MainMenuPanel mainMenuPanel = new MainMenuPanel(cards, rootPanel, windowMain, engine, gameWindow, sidePanelWindow);
 		contentPanel editorContentP = new contentPanel();
 		MapEditorPanel mapEditorPanel = new MapEditorPanel(cards, rootPanel, windowMain, iLoader);
 		editorContentP.add(mapEditorPanel, BorderLayout.CENTER);
-		editorContentP.add(new EditorSidePanel(engine, iLoader, gameWindow), BorderLayout.EAST);
-		MainMenuPanel mainMenuPanel = new MainMenuPanel(cards, rootPanel, windowMain, engine, gameWindow, sidePanelWindow);
+		editorContentP.add(new EditorSidePanel(engine, iLoader, mapEditorPanel, mainMenuPanel), BorderLayout.EAST);
 		rootPanel.add(mainMenuPanel, "MENU");
 		rootPanel.add(contentP, "GAME");
 		rootPanel.add(new GameOverPanel(cards, rootPanel, windowMain, engine), "GAME_OVER");

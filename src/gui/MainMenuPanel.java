@@ -86,6 +86,11 @@ public class MainMenuPanel extends JPanel {
 	private void startNewGame()
 	{
 		engine.startNewGame();
+		showGame();
+	}
+
+	public void showGame()
+	{
 		cards.show(rootPanel, "GAME");
 		windowMain.pack();
 		gameWindow.requestFocusInWindow();
