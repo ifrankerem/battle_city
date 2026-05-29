@@ -32,62 +32,75 @@ public class LevelLoader {
    		return String.format("/resources/levels_txt/stage_%02d.txt", stageNumber);
 	}
 
+	public Level loadMap(String path)
+	{
+		try{
+			InputStream txStream = getClass().getResourceAsStream(path);
+			if(txStream == null)
+				throw new RuntimeException("Level file not found: " + path);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(txStream));
+			Tile tile[][] = new Tile[GamePanel.MAP_ROWS][GamePanel.MAP_COLS];
+			for(int row = 0 ; row < GamePanel.MAP_ROWS ; row++)
+			{
+				String line = reader.readLine(); // get lines from txt
+				for(int col = 0; col < GamePanel.MAP_COLS; col++)
+				{
+					char code = line.charAt(col);
+					switch (code){
+						case '0':
+						{
+							tile[row][col] = new EmptyTile(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+						case '1':
+						{
+							tile[row][col] = new BrickWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+						case '2':
+						{
+							tile[row][col] = new SteelWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+						case '3':
+						{
+							tile[row][col] = new Bush(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+						case '4':
+						{
+							tile[row][col] = new Water(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+						case '5':
+						{
+							tile[row][col] = new Base(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+						case '6':
+						{
+							tile[row][col] = new GrayRoad(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
+							break;
+						}
+
+					}
+				}
+			}
+			return new Level(tile);
+		}
+		catch(Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Error on level loading!", JOptionPane.WARNING_MESSAGE);
+			return null;
+		}
+	}
+
 	public void loadMaps()
 	{
 		try{
 			for(int i = 0; i < 36 ; i++)
 			{
-				InputStream txStream = getClass().getResourceAsStream(buildStagePath(i));
-				BufferedReader reader = new BufferedReader(new InputStreamReader(txStream));
-				Tile tile[][] = new Tile[GamePanel.MAP_ROWS][GamePanel.MAP_COLS];
-				for(int row = 0 ; row < GamePanel.MAP_ROWS ; row++)
-				{
-					String line = reader.readLine(); // get lines from txt 
-					for(int col = 0; col < GamePanel.MAP_COLS; col++)
-					{
-						char code = line.charAt(col);
-						switch (code){
-							case '0':
-							{
-								tile[row][col] = new EmptyTile(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-								break;
-							}
-							case '1':
-							{
-								tile[row][col] = new BrickWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-								break;
-							}
-							case '2':
-							{
-								tile[row][col] = new SteelWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-								break;
-							}
-							case '3':
-							{
-								tile[row][col] = new Bush(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-								break;
-							}
-							case '4':
-							{
-								tile[row][col] = new Water(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-								break;
-							}
-							case '5':
-							{
-								boolean isTopLeft = (row == 24 && col == 12); //TODO this line for map construction part
-								tile[row][col] = new Base(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader, isTopLeft);
-								break;
-							}
-							case '6':
-							{
-								tile[row][col] = new GrayRoad(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, iLoader);
-								break;
-							}
-
-						}
-					}
-				}
-				levels[i] = new Level(tile);
+				levels[i] = loadMap(buildStagePath(i));
 			}
 		}
 		catch(Exception e)
@@ -101,4 +114,3 @@ public class LevelLoader {
 		return levels;
 	}
 }
-

@@ -40,6 +40,7 @@ public class ImageLoader {
 	private BufferedImage totalScoreImage;
 	private BufferedImage paused_textImage;
 	private BufferedImage stageLoadImage;
+	private BufferedImage playImage;
 
 	public ImageLoader()
 	{
@@ -75,6 +76,7 @@ public class ImageLoader {
 		this.totalScoreImage = loadImage("/resources/images/total_score.png");
 		this.paused_textImage = loadImage("/resources/images/pause2.png");
 		this.stageLoadImage = loadImage("/resources/images/stageLoad.png");
+		this.playImage = loadImage("/resources/images/play.png");
 	}
 
 	
@@ -255,5 +257,9 @@ public class ImageLoader {
 
 	public BufferedImage getStageLoadImage() {
 		return stageLoadImage;
+	}
+
+	public BufferedImage getPlayImage() {
+		return playImage;
 	}
 }

@@ -30,7 +30,7 @@ public class PlayerTank extends Tank{
 		this.updateShootCoolDown();
 		if(this.isSpawn)
 		{
-			if(inputs.up || inputs.down || inputs.left || inputs.right) // there will be no animation while player standing still
+		if(inputs.up || inputs.down || inputs.left || inputs.right) // there will be no animation while player standing still
 		{			
 				if(inputs.up)
 				{

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.awt.Font;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import engine.GameEngine;
 import util.ScoreManager;
 import util.ScoreRecord;
 
@@ -29,7 +28,7 @@ public class HighScoresPanel extends JPanel {
 	private ScoreManager scoreManager;
     private ArrayList<ScoreRecord> topScores;
 
-	public HighScoresPanel(CardLayout cards, JPanel rootPanel, MainFrame windowMain, GameEngine engine)
+	public HighScoresPanel(CardLayout cards, JPanel rootPanel, MainFrame windowMain)
 	{
 		this.cards = cards;
 		this.rootPanel = rootPanel;
@@ -69,7 +68,7 @@ public class HighScoresPanel extends JPanel {
         g.setFont(new Font("Monospaced", Font.BOLD, 18));
         g.setColor(Color.WHITE);
 
-        int startX = 80;
+        int startX = 130;
         int startY = 190;
         int rowHeight = 32;
 

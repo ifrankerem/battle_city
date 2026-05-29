@@ -5,10 +5,12 @@ import tile.Base;
 import tile.BrickWall;
 import tile.Bush;
 import tile.EmptyTile;
+import tile.GrayRoad;
 import tile.SteelWall;
 import tile.Tile;
 import tile.Water;
-
+import util.TileEnum;
+import engine.GameEngine;
 import java.awt.Graphics;
 
 
@@ -162,6 +164,73 @@ public class Level {
 				int row = baseWallPositions[i][0];
 				int col = baseWallPositions[i][1];
 				tiles[row][col] = new BrickWall(col * GamePanel.MAP_CELL_SIZE, row * GamePanel.MAP_CELL_SIZE, tiles[row][col].getImageLoader()); 
+			}
+		}
+	}
+
+	public boolean isInsideMap(int row, int col)
+	{
+		if(row < 0 || row >= GamePanel.MAP_ROWS || col < 0 || col >= GamePanel.MAP_COLS)
+			return false;
+
+		if((row == 24 || row == 25) && (col == 12 || col == 13)) // base is always in these
+			return false;
+
+		for(int i = 0; i < GameEngine.EnemyBaseSpawnCords.length; i++)
+		{
+			if(isSpawnCell(row, col, GameEngine.EnemyBaseSpawnCords[i][0], GameEngine.EnemyBaseSpawnCords[i][1]))
+				return false;
+		}
+
+		if(isSpawnCell(row, col, GameEngine.PlayerBaseSpawnCords[0], GameEngine.PlayerBaseSpawnCords[1]))
+			return false;
+
+		return true;
+	}
+
+	private boolean isSpawnCell(int row, int col, int spawnX, int spawnY)
+	{
+		int spawnCol = spawnX / GamePanel.MAP_CELL_SIZE;
+		int spawnRow = spawnY / GamePanel.MAP_CELL_SIZE;
+		int spawnCellSize = (int)Math.ceil((double)GamePanel.ENTITY_SIZE / GamePanel.MAP_CELL_SIZE);
+		return row >= spawnRow && row < spawnRow + spawnCellSize && col >= spawnCol && col < spawnCol + spawnCellSize;
+	}
+
+	public void setTile(int row, int col, TileEnum tile)
+	{
+		int x = col * GamePanel.MAP_CELL_SIZE;
+		int y = row * GamePanel.MAP_CELL_SIZE;
+
+		switch (tile) {
+			case EMPTY:
+			{
+				this.tiles[row][col] = new EmptyTile(x, y, tiles[row][col].getImageLoader());
+				break;
+			}
+			case BRICK:
+			{
+				this.tiles[row][col] = new BrickWall(x, y, tiles[row][col].getImageLoader());
+				break;
+			}
+			case STEEL:
+			{
+				this.tiles[row][col] = new SteelWall(x, y, tiles[row][col].getImageLoader());
+				break;
+			}
+			case BUSH:
+			{
+				this.tiles[row][col] = new Bush(x, y, tiles[row][col].getImageLoader());
+				break;
+			}
+			case WATER:
+			{
+				this.tiles[row][col] = new Water(x, y, tiles[row][col].getImageLoader());
+				break;
+			}
+			case GRAYROAD:
+			{
+				this.tiles[row][col] = new GrayRoad(x, y, tiles[row][col].getImageLoader());
+				break;
 			}
 		}
 	}

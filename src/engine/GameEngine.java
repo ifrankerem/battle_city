@@ -3,7 +3,6 @@ import java.awt.Graphics;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
 import entity.PlayerTank;
 import entity.Bullet;
 import entity.EnemyTankBase;
@@ -14,7 +13,6 @@ import level.Level;
 import level.LevelLoader;
 import model.AnimatedModel;
 import model.BulletExplosion;
-import model.Explosion;
 import model.FiveHundred;
 import model.InvincibleModel;
 import model.Spawn;
@@ -25,12 +23,9 @@ import util.GameState;
 import util.ImageLoader;
 import util.ScoreManager;
 import util.ScoreRecord;
-
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javax.swing.JOptionPane;
-
 import gui.GamePanel;
 import model.TwoHundred;
 import powerup.BombPowerUp;
@@ -57,8 +52,8 @@ public class GameEngine {
 	private ArrayList <Model> models;
 	private ArrayList<PowerUp> powerUps;
 	private ArrayList<TimedPowerUps> activeEffects;
-	private static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
-	private static final int[] PlayerBaseSpawnCords = {220,570};
+	public static final int[][] EnemyBaseSpawnCords = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
+	public static final int[] PlayerBaseSpawnCords = {220,570};
 	private static final int START_LEVEL_INDEX = 0;
 	private static final int MAX_ENEMY_PER_LEVEL = 5;
 	private static final int PLAYER_START_HEALTH = 10; //TODO end of this do 3
@@ -810,11 +805,6 @@ public class GameEngine {
 		String totalTanksStr = String.valueOf(totalTanks);
 		int totalTanksX = 345 - (totalTanksStr.length() * digitW);
 		this.drawNumber(g, totalTanks, totalTanksX, totalY + 5, digitW, digitH);
-	}
-
-	public void drawNextLevel(Graphics g)
-	{
-
 	}
 
 	public ArrayList<Bullet> getBullets() {
