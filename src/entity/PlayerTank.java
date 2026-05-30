@@ -72,6 +72,7 @@ public class PlayerTank extends Tank{
 			{
 				this.shoot();
 				this.resetShootCoolDown();
+				
 			}
 			this.updateHitbox();
 

@@ -9,6 +9,7 @@ import tile.GrayRoad;
 import tile.SteelWall;
 import tile.Tile;
 import tile.Water;
+import util.HitType;
 import util.TileEnum;
 import java.awt.Graphics;
 
@@ -18,11 +19,13 @@ public class Level {
 	private Tile[][] tiles;
 	private static final int[][] ENEMY_SPAWN_COORDS = {{0, 0}, {GamePanel.GAME_WIDTH / 2, 0}, {GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE, 0}};
 	private static final int[] PLAYER_SPAWN_COORDS = {220, 570};
+	private HitType lastBulletHitType;
 	int[][] baseWallPositions = {{23, 11}, {23, 12}, {23, 13}, {23, 14},{24, 11},{24, 14},{25, 11},{25, 14}};
 
 	public Level(Tile[][] tiles)
 	{
 		this.tiles = tiles;
+		this.lastBulletHitType = HitType.NONE;
 	}
 
 	public Tile[][] getTiles() {
@@ -127,6 +130,7 @@ public class Level {
 
 	public boolean hitboxControlBullet(double nextX, double nextY, int width ,int height)
 	{
+		lastBulletHitType = HitType.NONE;
 		int leftCol = (int)nextX / GamePanel.MAP_CELL_SIZE;
 		int rightCol = ((int)nextX + width - 1) / GamePanel.MAP_CELL_SIZE;
 		int topRow = (int)nextY / GamePanel.MAP_CELL_SIZE;
@@ -142,6 +146,7 @@ public class Level {
 				// System.out.println(tiles[row][col]);
 				if(!tiles[row][col].getisPassable())
 					{
+						lastBulletHitType = getBulletHitType(tiles[row][col]);
 						tiles[row][col].setHitted(true);
 						if(tiles[row][col].getDestroyable() == true)
 							tiles[row][col] = new EmptyTile(tiles[row][col].getX(),tiles[row][col].getY(),tiles[row][col].getImageLoader());
@@ -150,6 +155,21 @@ public class Level {
 			}
 		}
 		return true;
+	}
+
+	private HitType getBulletHitType(Tile tile)
+	{
+		if(tile instanceof BrickWall)
+			return HitType.BRICK;
+		if(tile instanceof SteelWall)
+			return HitType.STEEL;
+
+		return HitType.NONE;
+	}
+
+	public HitType getLastBulletHitType()
+	{
+		return lastBulletHitType;
 	}
 
 	public boolean isbaseDestroyed()

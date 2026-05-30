@@ -23,6 +23,9 @@ import util.GameState;
 import util.ImageLoader;
 import util.ScoreManager;
 import util.ScoreRecord;
+import util.SoundLoader;
+import util.HitType;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
@@ -57,6 +60,7 @@ public class GameEngine {
 	private static final int START_LEVEL_INDEX = 0;
 	private static final int MAX_ENEMY_PER_LEVEL = 5;
 	private static final int PLAYER_START_HEALTH = 10; //TODO end of this do 3
+	private static final int BONUS_SCORE = 500;
 	private int maxEnemy = MAX_ENEMY_PER_LEVEL; 
 	private int score;
 	private int active_enemy_nbr = 0;
@@ -65,6 +69,7 @@ public class GameEngine {
 	private int pinkTanknbr;
 	private int whiteTanknbr;
 	private int greenTanknbr;
+	private int bonusNbr;
 	private boolean isFrozen;
 	private boolean isInvincible;
 	private boolean powerUp13Spawned = false;
@@ -73,11 +78,13 @@ public class GameEngine {
 	private int starPowerCounter;
 	private ScoreManager scoreManager;
 	private boolean nameAsked;
+	private boolean gameOverSoundPlayed;
 	private boolean customLevelMode;
 	private int levelCompleteCounter;
 	private int stageLoadCounter;
 	private static final int LEVEL_COMPLETE_DELAY = 180;
 	private static final int STAGE_LOAD_DELAY = 120;
+	private SoundLoader soundLoader;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -94,7 +101,9 @@ public class GameEngine {
 		this.score = 0;
 		this.scoreManager = new ScoreManager();
 		this.nameAsked = false;
+		this.gameOverSoundPlayed = false;
 		this.customLevelMode = false;
+		this.soundLoader = new SoundLoader();
 		this.startNewGame();
 	}
 
@@ -128,6 +137,7 @@ public class GameEngine {
 		pinkTanknbr = 0;
 		whiteTanknbr = 0;
 		greenTanknbr = 0;
+		bonusNbr = 0;
 		powerUpStarMax = 3;
 		this.isFrozen = false;
 		this.isInvincible = false;
@@ -136,6 +146,7 @@ public class GameEngine {
 		this.starPowerCounter = 0;
 		this.levelCompleteCounter = 0;
 		this.stageLoadCounter = 0;
+		this.gameOverSoundPlayed = false;
 	}
 
 	private void prepareNextStage()
@@ -214,12 +225,7 @@ public class GameEngine {
 	{			
 		if(this.gameState == GameState.GAME_OVER)
 		{
-			if(!this.nameAsked)
-			{
-				this.nameAsked = true;
-				return true;
-			}
-			return false;
+			return this.updateGameOverState();
 		}
 		if(this.gameState == GameState.LEVEL_COMPLETE)
 		{
@@ -227,9 +233,16 @@ public class GameEngine {
 			if(this.levelCompleteCounter >= LEVEL_COMPLETE_DELAY)
 			{
 				if(this.customLevelMode)
+				{
 					this.gameState = GameState.GAME_OVER;
+					return this.updateGameOverState();
+				}
 				else
+				{
 					this.prepareNextStage();
+					if(this.gameState == GameState.GAME_OVER)
+						return this.updateGameOverState();
+				}
 			}
 			return false;
 		}
@@ -254,8 +267,7 @@ public class GameEngine {
 
 		if(this.gameState == GameState.GAME_OVER && !this.nameAsked)
 		{
-			this.nameAsked = true;
-			return true;
+			return this.updateGameOverState();
 		}
 
 		if(this.gameState == GameState.PLAYING)
@@ -288,6 +300,29 @@ public class GameEngine {
 			this.updateAnimatedModels();
 		}
 
+		if(this.gameState == GameState.GAME_OVER)
+			return this.updateGameOverState();
+
+		return false;
+	}
+
+	private boolean updateGameOverState()
+	{
+		if(!this.gameOverSoundPlayed)
+		{
+			soundLoader.playGameOver();
+			this.gameOverSoundPlayed = true;
+		}
+
+		if(this.customLevelMode)
+			return false;
+
+		if(!this.nameAsked)
+		{
+			this.nameAsked = true;
+			return true;
+		}
+
 		return false;
 	}
 
@@ -302,6 +337,8 @@ public class GameEngine {
 				{
 					if(bullet.getHitbox().intersects(curr.getHitbox()) && curr.get_isAlive())
 					{
+						if(curr instanceof EnemyTankWhite && (curr.getHealth() == 2 || curr.getHealth() == 3))
+							soundLoader.playBigTankSound();
 						curr.getDamage();
 						bullet.setActive(false);
 						if(curr.get_isAlive() == false)
@@ -365,6 +402,7 @@ public class GameEngine {
 				continue;
 			if(powerUp.getHitbox().intersects(player.getHitbox()))
 			{
+				this.addBonusScore(powerUp);
 				if(powerUp instanceof TimedPowerUps) {
 					TimedPowerUps timedPowerUp = (TimedPowerUps)powerUp;
 					Iterator<TimedPowerUps> effectIt = activeEffects.iterator();
@@ -392,6 +430,14 @@ public class GameEngine {
 		}
 	}
 
+	private void addBonusScore(PowerUp powerUp)
+	{
+		this.bonusNbr++;
+		this.score += BONUS_SCORE;
+		this.models.add(new FiveHundred(powerUp.getX(), powerUp.getY(), iLoader));
+		this.soundLoader.playPowerUpObtained();
+	}
+
 	private void removeInvincibleModels()
 	{
 		Iterator<AnimatedModel> iterator = animatedModels.iterator();
@@ -402,10 +448,6 @@ public class GameEngine {
 		}
 	}
 
-	private void removeShieldEffects()
-	{
-		this.removeShieldEffects(true);
-	}
 
 	private void removeShieldEffects(boolean removeInvincibleModels)
 	{
@@ -468,21 +510,28 @@ public class GameEngine {
 		// Spawn inside the visible game area
 		int randomX = (int)(Math.random() * (GamePanel.GAME_WIDTH - 60)) + 30;
 		int randomY = (int)(Math.random() * (GamePanel.GAME_HEIGHT - 60)) + 30;
+		PowerUp powerUp = null;
 		if(spawnRate <= 16)
-			powerUps.add(new ClockPowerUp(randomX, randomY, iLoader));
+			powerUp = new ClockPowerUp(randomX, randomY, iLoader);
 		else if(spawnRate <= 32)
-			powerUps.add(new BombPowerUp(randomX, randomY, iLoader));
+			powerUp = new BombPowerUp(randomX, randomY, iLoader);
 		else if(spawnRate <= 48)
-			powerUps.add(new ShieldPowerUp(randomX, randomY, iLoader,1800));
+			powerUp = new ShieldPowerUp(randomX, randomY, iLoader,1800);
 		else if(spawnRate <= 64)
-			powerUps.add(new ShovelPowerUp(randomX, randomY, iLoader));
+			powerUp = new ShovelPowerUp(randomX, randomY, iLoader);
 		else if(spawnRate <= 80) 
-			powerUps.add(new TankPowerUp(randomX, randomY, iLoader));
+			powerUp = new TankPowerUp(randomX, randomY, iLoader);
 		else if(powerUpStarMax <= 3 && powerUpStarMax > 0)
 		{
 			powerUpStarMax--;
-			powerUps.add(new StarPowerUp(randomX, randomY, iLoader));
+			powerUp = new StarPowerUp(randomX, randomY, iLoader);
 
+		}
+
+		if(powerUp != null)
+		{
+			powerUps.add(powerUp);
+			soundLoader.playPowerUpAppeared();
 		}
 	}
 
@@ -504,7 +553,10 @@ public class GameEngine {
 		{
 			Bullet playerBullet = player.getBullet();
 			if(playerBullet != null && playerBullet.getActive() && !bullets.contains(playerBullet) && player.countBullets(bullets) < player.getMaxBulletCount())
+			{
 				bullets.add(playerBullet);
+				soundLoader.playShoot();
+			}
 		}
 		Iterator <EnemyTankBase> it_t = enemytanks.iterator();
 		while(it_t.hasNext())
@@ -522,10 +574,22 @@ public class GameEngine {
 			Bullet bullet = it.next();
 			if(bullet.getActive() == false)
 			{
+				this.playBulletHitSound(bullet);
 				animatedModels.add(new BulletExplosion(bullet.getX(), bullet.getY(), iLoader));
 				it.remove();
 			}
 		}
+	}
+
+	private void playBulletHitSound(Bullet bullet)
+	{
+		if(!(bullet.getOwnerTank() instanceof PlayerTank))
+			return;
+
+		if(bullet.getHitType() == HitType.BRICK)
+			soundLoader.playBrickBreak();
+		else if(bullet.getHitType() == HitType.STEEL)
+			soundLoader.playSteelHit();
 	}
 
 
@@ -547,12 +611,14 @@ public class GameEngine {
 					models.add(new ThreeHundred(enemy.getX(), enemy.getY(), iLoader));
 				else if(enemy instanceof EnemyTankWhite)
 					models.add(new FiveHundred(enemy.getX(), enemy.getY(), iLoader));
+				soundLoader.playTankExplosion();
 				it_t.remove();
 			}
 		}
 		if(player.get_isAlive() == false)
 		{
 			animatedModels.add(new TankExplosion(player.getX(), player.getY(), iLoader));
+			soundLoader.playTankExplosion();
 			iManager.reset();
 			player_max_health--;
 			this.playerSpawn();
@@ -715,9 +781,15 @@ public class GameEngine {
 	public synchronized void togglePause()
 	{
 		if(this.gameState == GameState.PAUSED)
+		{
 			this.gameState = GameState.PLAYING;
+			soundLoader.playPause();
+		}
 		else if(this.gameState == GameState.PLAYING)
+		{
 			this.gameState = GameState.PAUSED;
+			soundLoader.playPause();
+		}
 	}
 
 	public void askNameAndSaveScore() 
@@ -837,15 +909,16 @@ public class GameEngine {
 		drawTankKillRow(g, whiteTanknbr, 500, 3, 8, startY);
 		drawTankKillRow(g, greenTanknbr, 200, 11, 0, startY + rowGap);
 		drawTankKillRow(g, pinkTanknbr, 300, 10, 8, startY + 2 * rowGap);
+		drawBonusRow(g, bonusNbr, startY + 3 * rowGap);
 
-		int totalY = startY + 3 * rowGap + 20;
+		int totalY = startY + 4 * rowGap + 20;
 		
 		g.setColor(java.awt.Color.WHITE);
 		g.fillRect(230, totalY - 10, 203, 4);
 
 		g.drawImage(iLoader.getTotalImage(), 195, totalY, 90, 30, null);
 		
-		int totalTanks = whiteTanknbr + greenTanknbr + pinkTanknbr;
+		int totalTanks = whiteTanknbr + greenTanknbr + pinkTanknbr + bonusNbr;
 		String totalTanksStr = String.valueOf(totalTanks);
 		int totalTanksX = 345 - (totalTanksStr.length() * digitW);
 		this.drawNumber(g, totalTanks, totalTanksX, totalY + 5, digitW, digitH);
@@ -879,6 +952,27 @@ public class GameEngine {
 		this.drawNumber(g, count, countNumX, y + 10, digitW, digitH);
 		g.drawImage(iLoader.getArrowImage(), arrowX, y + 15, 30, 15, null);
 		g.drawImage(iLoader.getEntitySprite2(spriteRow, spriteCol), tankImgX, y, 48, 48, null);
+	}
+
+	private void drawBonusRow(Graphics g, int count, int y)
+	{
+		int digitW = 20;
+		int digitH = 20;
+		int ptsValue = count * BONUS_SCORE;
+		String ptsStr = String.valueOf(ptsValue);
+		String countStr = String.valueOf(count);
+
+		int ptsNumX = 220 - (ptsStr.length() * digitW); 
+		int ptsImgX = 230;
+		int countNumX = 345 - (countStr.length() * digitW);
+		int arrowX = 350;
+		int bonusImgX = 385;
+
+		this.drawNumber(g, ptsValue, ptsNumX, y + 10, digitW, digitH);
+		g.drawImage(iLoader.getPtsImage(), ptsImgX, y + 5, 60, 30, null);
+		this.drawNumber(g, count, countNumX, y + 10, digitW, digitH);
+		g.drawImage(iLoader.getArrowImage(), arrowX, y + 15, 30, 15, null);
+		g.drawImage(iLoader.getBonusesImage(), bonusImgX, y + 2, 110, 37, null);
 	}
 
 }

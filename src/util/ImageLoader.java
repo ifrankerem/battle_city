@@ -44,6 +44,7 @@ public class ImageLoader {
 	private BufferedImage paused_textImage;
 	private BufferedImage stageLoadImage;
 	private BufferedImage playImage;
+	private BufferedImage bonusesImage;
 
 	public ImageLoader()
 	{
@@ -81,6 +82,7 @@ public class ImageLoader {
 		this.paused_textImage = loadImage("/resources/images/pause2.png");
 		this.stageLoadImage = loadImage("/resources/images/stageLoad.png");
 		this.playImage = loadImage("/resources/images/play.png");
+		this.bonusesImage = loadImage("/resources/images/bonuses.png");
 	}
 
 	
@@ -282,5 +284,9 @@ public class ImageLoader {
 
 	public BufferedImage getPlayImage() {
 		return playImage;
+	}
+
+	public BufferedImage getBonusesImage() {
+		return bonusesImage;
 	}
 }

@@ -2,6 +2,7 @@ package entity;
 
 import model.GameObject;
 import util.Direction;
+import util.HitType;
 import util.ImageLoader;
 import java.awt.Graphics;
 import java.awt.Color;
@@ -17,6 +18,7 @@ public class Bullet extends GameObject {
 	private int speed;
 	private Tank ownerTank;
 	private boolean active;
+	private HitType hitType;
 	
 	public Bullet(double x, double y, ImageLoader iLoader, Tank ownerTank)
 	{
@@ -24,6 +26,7 @@ public class Bullet extends GameObject {
 		this.ownerTank = ownerTank;
 		this.dir = ownerTank.dir;
 		this.active = true;
+		this.hitType = HitType.NONE;
 		this.speed = 7;
 		this.initImage();
 	}
@@ -68,14 +71,21 @@ public class Bullet extends GameObject {
 			nextX -= speed;
 		else if(this.dir == Direction.SOUTH)
 			nextY += this.speed;
-		if(nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width)) && currentLevel.hitboxControlBullet(nextX, nextY, this.hitbox.width, this.hitbox.height))
+		boolean isInsideMap = nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width));
+		if(isInsideMap && currentLevel.hitboxControlBullet(nextX, nextY, this.hitbox.width, this.hitbox.height))
 		{
 			this.y = nextY;
 			this.x = nextX;
 			this.updateHitbox();
 		}
 		else
+		{
+			if(isInsideMap)
+				this.hitType = currentLevel.getLastBulletHitType();
+			else
+				this.hitType = HitType.NONE;
 			this.active = false;
+		}
 	}
 
 	public void draw(Graphics g)
@@ -125,6 +135,11 @@ public class Bullet extends GameObject {
 	public void setActive(boolean value)
 	{
 		this.active = value;
+	}
+
+	public HitType getHitType()
+	{
+		return hitType;
 	}
 
 	public void incrementSpeed(int value)
