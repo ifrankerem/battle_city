@@ -7,7 +7,7 @@ public class EnemyTankPink extends EnemyTankBase{
 
 	public EnemyTankPink(double x, double y, double speed, Direction dir,ImageLoader iLoader)
 	{
-		super(x, y, 3.2, dir, iLoader);
+		super(x, y, 2.8, dir, iLoader);
 		this.health = 1;
 		this.score = 300;
 	}
