@@ -37,7 +37,7 @@ public class Main {
 		contentP.add(sidePanelWindow,BorderLayout.EAST);
 		MainMenuPanel mainMenuPanel = new MainMenuPanel(cards, rootPanel, windowMain, engine, gameWindow, sidePanelWindow);
 		contentPanel editorContentP = new contentPanel();
-		MapEditorPanel mapEditorPanel = new MapEditorPanel(cards, rootPanel, windowMain, iLoader);
+		MapEditorPanel mapEditorPanel = new MapEditorPanel(iLoader);
 		editorContentP.add(mapEditorPanel, BorderLayout.CENTER);
 		editorContentP.add(new EditorSidePanel(engine, iLoader, mapEditorPanel, mainMenuPanel), BorderLayout.EAST);
 		rootPanel.add(mainMenuPanel, "MENU");

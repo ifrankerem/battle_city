@@ -25,7 +25,6 @@ import util.ScoreManager;
 import util.ScoreRecord;
 import util.SoundLoader;
 import util.HitType;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
@@ -58,8 +57,8 @@ public class GameEngine {
 	private static final int[][] ENEMY_SPAWN_COORDS = {{0,0},{GamePanel.GAME_WIDTH/2,0},{GamePanel.GAME_WIDTH - GamePanel.ENTITY_SIZE,0}};
 	private static final int[] PLAYER_SPAWN_COORDS = {220,570};
 	private static final int START_LEVEL_INDEX = 0;
-	private static final int MAX_ENEMY_PER_LEVEL = 5;
-	private static final int PLAYER_START_HEALTH = 10; //TODO end of this do 3
+	private static final int MAX_ENEMY_PER_LEVEL = 20;
+	private static final int PLAYER_START_HEALTH = 3; 
 	private static final int BONUS_SCORE = 500;
 	private int maxEnemy = MAX_ENEMY_PER_LEVEL; 
 	private int score;

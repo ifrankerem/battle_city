@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -13,24 +12,17 @@ import level.Level;
 import level.LevelLoader;
 import util.ImageLoader;
 import util.TileEnum;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
 public class MapEditorPanel extends JPanel implements KeyListener{
 
-	private CardLayout cards;
-	private JPanel rootPanel;
-	private MainFrame windowMain;
 	private Level emptyLevel;
 	private TileEnum selectedTileType;
 
-	public MapEditorPanel(CardLayout cards, JPanel rootPanel, MainFrame windowMain, ImageLoader iLoader)
+	public MapEditorPanel(ImageLoader iLoader)
 	{
-		this.cards = cards;
-		this.rootPanel = rootPanel;
-		this.windowMain = windowMain;
 		this.selectedTileType = TileEnum.EMPTY;
 		this.emptyLevel = new LevelLoader(iLoader).loadMap("/resources/levels_txt/empty_level.txt");
 		this.setPreferredSize(new Dimension(GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT));
