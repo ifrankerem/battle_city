@@ -148,4 +148,8 @@ abstract public class Tank extends GameObject{
 		this.isAlive = isAlive;
 	}
 
+	public Direction getDir() {
+		return dir;
+	}
+
 }

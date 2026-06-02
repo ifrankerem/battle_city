@@ -46,13 +46,28 @@ public class HighScoresPanel extends JPanel {
 					HighScoresPanel.this.windowMain.pack();
 				}
 			}
-		});
-		this.scoreManager = new ScoreManager();
-		this.topScores = scoreManager.getTopScores(10);
-	}
+			});
+			this.scoreManager = new ScoreManager();
+			this.refreshScores();
+		}
 
-	private BufferedImage loadImage(String path)
-	{
+		private void refreshScores()
+		{
+			this.topScores = scoreManager.getTopScores(10);
+		}
+
+		public void setVisible(boolean visible)
+		{
+			super.setVisible(visible);
+			if(visible)
+			{
+				this.refreshScores();
+				this.repaint();
+			}
+		}
+	
+		private BufferedImage loadImage(String path)
+		{
 		try {
 			InputStream stream = getClass().getResourceAsStream(path);
 			if(stream == null)

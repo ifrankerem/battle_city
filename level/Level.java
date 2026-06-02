@@ -9,9 +9,12 @@ import tile.GrayRoad;
 import tile.SteelWall;
 import tile.Tile;
 import tile.Water;
+import util.Direction;
 import util.HitType;
 import util.TileEnum;
 import java.awt.Graphics;
+
+import entity.PlayerTank;
 
 
 public class Level {
@@ -113,20 +116,18 @@ public class Level {
 		// division for taking (x,y) cordinates
 		//System.out.println("leftCol: " + leftCol + " rightCol: " + rightCol + " topRow: " + topRow + " bottomRow: " + bottomRow);
 
-		for(int row = topRow; row <= bottomRow ; row++)
+		for(int row = topRow; row <= bottomRow; row++)
 		{
 			for(int col = leftCol; col <= rightCol; col++)
 			{
 				// System.out.println("row:" + row + " col: " + col);
 				// System.out.println(tiles[row][col]);
 				if(!tiles[row][col].getisPassable())
-					return false;					
+					return false;	
 			}
 		}
 		return true;
 	}
-
-
 
 	public boolean hitboxControlBullet(double nextX, double nextY, int width ,int height)
 	{
