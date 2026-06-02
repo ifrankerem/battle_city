@@ -93,9 +93,16 @@ public class MainMenuPanel extends JPanel {
 	{
 		cards.show(rootPanel, "GAME");
 		windowMain.pack();
+		gameWindow.updatePauseControls();
 		gameWindow.requestFocusInWindow();
 		if(loop == null)
 			loop = new GameLoop(engine, gameWindow, sidePanelWindow, cards, rootPanel, windowMain);
+	}
+
+	public void showMenu()
+	{
+		cards.show(rootPanel, "MENU");
+		windowMain.pack();
 	}
 
 	public void paintComponent(Graphics g)

@@ -45,6 +45,8 @@ public class ImageLoader {
 	private BufferedImage stageLoadImage;
 	private BufferedImage playImage;
 	private BufferedImage bonusesImage;
+	private BufferedImage returnToMainMenuImage;
+	private BufferedImage exitPNG;
 
 	public ImageLoader()
 	{
@@ -83,6 +85,8 @@ public class ImageLoader {
 		this.stageLoadImage = loadImage("/resources/images/stageLoad.png");
 		this.playImage = loadImage("/resources/images/play.png");
 		this.bonusesImage = loadImage("/resources/images/bonuses.png");
+		this.returnToMainMenuImage = loadImage("/resources/images/return_to_main_menu.png");
+		this.exitPNG = loadImage("/resources/images/exitPNG.png");
 	}
 
 	
@@ -288,5 +292,13 @@ public class ImageLoader {
 
 	public BufferedImage getBonusesImage() {
 		return bonusesImage;
+	}
+
+	public BufferedImage getReturnToMainMenuImage() {
+		return returnToMainMenuImage;
+	}
+
+	public BufferedImage getExitPNG() {
+		return exitPNG;
 	}
 }

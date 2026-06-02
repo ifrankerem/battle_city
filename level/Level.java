@@ -9,13 +9,9 @@ import tile.GrayRoad;
 import tile.SteelWall;
 import tile.Tile;
 import tile.Water;
-import util.Direction;
 import util.HitType;
 import util.TileEnum;
 import java.awt.Graphics;
-
-import entity.PlayerTank;
-
 
 public class Level {
 

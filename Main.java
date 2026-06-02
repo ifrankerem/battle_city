@@ -31,11 +31,18 @@ public class Main {
 		CardLayout cards = new CardLayout();
 		JPanel rootPanel = new JPanel(cards);
 		contentPanel contentP = new contentPanel();
-		GamePanel gameWindow = new GamePanel(engine);
+		GamePanel gameWindow = new GamePanel(engine, iLoader);
 		contentP.add(gameWindow,BorderLayout.CENTER);
 		SidePanel sidePanelWindow = new SidePanel(engine,iLoader,gameWindow);
 		contentP.add(sidePanelWindow,BorderLayout.EAST);
 		MainMenuPanel mainMenuPanel = new MainMenuPanel(cards, rootPanel, windowMain, engine, gameWindow, sidePanelWindow);
+		gameWindow.setReturnToMenuAction(new Runnable() {
+			public void run()
+			{
+				engine.exitToMenu();
+				mainMenuPanel.showMenu();
+			}
+		});
 		contentPanel editorContentP = new contentPanel();
 		MapEditorPanel mapEditorPanel = new MapEditorPanel(iLoader);
 		editorContentP.add(mapEditorPanel, BorderLayout.CENTER);

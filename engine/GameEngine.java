@@ -169,23 +169,24 @@ public class GameEngine {
 			this.gameState = GameState.LEVEL_COMPLETE;
 		while(active_enemy_nbr < 4 && active_enemy_nbr >= 0 && maxEnemy > 0)
 		{
-			int random = (int)(Math.random() * 3);
-			animatedModels.add(new Spawn(ENEMY_SPAWN_COORDS[random][0] - 5, ENEMY_SPAWN_COORDS[random][1] - 5, iLoader,false));
-			if(random == 0)
+			int random = (int)(Math.random() * 100);
+			int randomCord = (int)(Math.random() * 3);
+			animatedModels.add(new Spawn(ENEMY_SPAWN_COORDS[randomCord][0] - 5, ENEMY_SPAWN_COORDS[randomCord][1] - 5, iLoader,false));
+			if(random <= 10)
 			{
-				EnemyTankWhite enemy = new EnemyTankWhite(ENEMY_SPAWN_COORDS[random][0],ENEMY_SPAWN_COORDS[random][1] ,2,Direction.SOUTH,iLoader);
+				EnemyTankWhite enemy = new EnemyTankWhite(ENEMY_SPAWN_COORDS[randomCord][0],ENEMY_SPAWN_COORDS[randomCord][1] ,2,Direction.SOUTH,iLoader);
 				this.whiteTanknbr++;
 				enemytanks.add(enemy);
 			}
-			else if(random == 1)
+			else if(random <= 70)
 			{
-				EnemyTankGreen enemy = new EnemyTankGreen(ENEMY_SPAWN_COORDS[random][0],ENEMY_SPAWN_COORDS[random][1] ,2,Direction.SOUTH,iLoader);
+				EnemyTankGreen enemy = new EnemyTankGreen(ENEMY_SPAWN_COORDS[randomCord][0],ENEMY_SPAWN_COORDS[randomCord][1] ,2,Direction.SOUTH,iLoader);
 				this.greenTanknbr++;
 				enemytanks.add(enemy);
 			}
 			else
 			{
-				EnemyTankPink enemy = new EnemyTankPink(ENEMY_SPAWN_COORDS[random][0],ENEMY_SPAWN_COORDS[random][1] ,2,Direction.SOUTH,iLoader);
+				EnemyTankPink enemy = new EnemyTankPink(ENEMY_SPAWN_COORDS[randomCord][0],ENEMY_SPAWN_COORDS[randomCord][1] ,2,Direction.SOUTH,iLoader);
 				this.pinkTanknbr++;
 				enemytanks.add(enemy);
 			}
@@ -789,6 +790,12 @@ public class GameEngine {
 			this.gameState = GameState.PAUSED;
 			soundLoader.playPause();
 		}
+	}
+
+	public synchronized void exitToMenu()
+	{
+		iManager.reset();
+		this.gameState = GameState.PAUSED;
 	}
 
 	public void askNameAndSaveScore() 

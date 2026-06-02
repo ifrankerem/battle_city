@@ -23,6 +23,7 @@ public class EditorSidePanel extends JPanel {
 	private ImageLoader iLoader;
 	private JButton playButton;
 	private BufferedImage[] tileImages;
+	private JButton exitButton;
 	
 
 	public EditorSidePanel(GameEngine engine,ImageLoader iLoader,MapEditorPanel mapEditorPanel, MainMenuPanel mainMenuPanel)
@@ -34,6 +35,7 @@ public class EditorSidePanel extends JPanel {
 		this.engine = engine;
 		this.initTileImages();
 		this.initplayButton(mapEditorPanel, mainMenuPanel);
+		this.initExitButton(mainMenuPanel);
 	}
 
 	private void initTileImages()
@@ -55,7 +57,7 @@ public class EditorSidePanel extends JPanel {
 		ImageIcon pauseIcon = new ImageIcon(scaledIcon); //Jbuton wants button
 		playButton = new JButton(pauseIcon);
 		int btnX = (SIDEPANEL_WIDTH - btnSize) / 2;
-		int btnY = GamePanel.GAME_HEIGHT - 130;
+		int btnY = GamePanel.GAME_HEIGHT - 150;
 		playButton.setBounds(btnX, btnY, btnSize, btnSize);
 		playButton.setBorderPainted(false); //disable default borders
 		playButton.setContentAreaFilled(false); //disable default background color
@@ -106,6 +108,31 @@ public class EditorSidePanel extends JPanel {
 				g.drawImage(tileImages[i], iconX, y, iconSize, iconSize, null);
 			this.drawNumber(g, i, numberX, y + (iconSize - digitH) / 2, digitW, digitH);
 		}
+	}
+
+	private void initExitButton(MainMenuPanel mainMenuPanel)
+	{
+		int btnSize = 95;
+		Image scaledIcon = iLoader.getExitPNG().getScaledInstance(btnSize, btnSize, Image.SCALE_FAST);
+		ImageIcon pauseIcon = new ImageIcon(scaledIcon); //Jbuton wants button
+		exitButton = new JButton(pauseIcon);
+		int btnX = (SIDEPANEL_WIDTH - btnSize) / 2;
+		int btnY = GamePanel.GAME_HEIGHT - (btnSize * 2) - 60;
+		exitButton.setBounds(btnX, btnY, btnSize, btnSize);
+		exitButton.setBorderPainted(false); //disable default borders
+		exitButton.setContentAreaFilled(false); //disable default background color
+		exitButton.setFocusPainted(false); // disable focusing for example with tab there will be black borders we dont want that
+		exitButton.setOpaque(false); //set absolute opaque
+		exitButton.setFocusable(false); // WASD can be interrupted by this so even if button pressed WASD will gonna work properly
+		exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); //when get on the button cursor gonna change to hand cursor
+		exitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				engine.exitToMenu();
+				mainMenuPanel.showMenu();
+			}
+		}); //do unpause and pause also set focus on gamepanel so player can play when unpaused
+		add(exitButton); //adding button to sidePanel
 	}
 
 	public void paintComponent(Graphics g)
