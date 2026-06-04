@@ -84,8 +84,8 @@ public class HighScoresPanel extends JPanel {
         g.setColor(Color.WHITE);
 
         int startX = 130;
-        int startY = 190;
-        int rowHeight = 32;
+        int startY = 205;
+        int rowHeight = 30;
 
         g.drawString("RANK", startX, startY);
         g.drawString("NAME", startX + 80, startY);

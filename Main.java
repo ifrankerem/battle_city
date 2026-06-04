@@ -12,6 +12,7 @@ import gui.MainMenuPanel;
 import gui.MapEditorPanel;
 import gui.MainFrame;
 import gui.EditorSidePanel;
+import gui.OptionsPanel;
 import gui.SidePanel;
 import gui.contentPanel;
 import level.LevelLoader;
@@ -51,6 +52,7 @@ public class Main {
 		rootPanel.add(contentP, "GAME");
 		rootPanel.add(new GameOverPanel(cards, rootPanel, windowMain, engine), "GAME_OVER");
 		rootPanel.add(editorContentP, "MAP_EDITOR");
+		rootPanel.add(new OptionsPanel(cards, rootPanel, windowMain, engine), "OPTIONS");
 		rootPanel.add(new HighScoresPanel(cards, rootPanel, windowMain), "HIGH_SCORES");
 		rootPanel.add(new ImagePagePanel("/resources/images/Help.png", cards, rootPanel, windowMain), "HELP");
 		rootPanel.add(new ImagePagePanel("/resources/images/About.png", cards, rootPanel, windowMain), "ABOUT");

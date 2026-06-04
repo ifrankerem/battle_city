@@ -43,6 +43,10 @@ import java.awt.Color;
 
 public class GameEngine {
 
+	public static final int MIN_PLAYER_LIVES = 1;
+	public static final int MAX_PLAYER_LIVES = 9;
+	public static final int MIN_START_LEVEL = 1;
+	public static final int MAX_START_LEVEL = 37;
 	private InputManager iManager;
 	private PlayerTank player;
 	private ImageLoader iLoader;
@@ -86,6 +90,8 @@ public class GameEngine {
 	private static final int LEVEL_COMPLETE_DELAY = 180;
 	private static final int STAGE_LOAD_DELAY = 120;
 	private SoundLoader soundLoader;
+	private int startingPlayerLives;
+	private int startingLevelIndex;
 
 	public GameEngine(InputManager iManager, ImageLoader iLoader,Level[] levels)
 	{
@@ -105,6 +111,8 @@ public class GameEngine {
 		this.gameOverSoundPlayed = false;
 		this.customLevelMode = false;
 		this.soundLoader = new SoundLoader();
+		this.startingPlayerLives = PLAYER_START_HEALTH;
+		this.startingLevelIndex = START_LEVEL_INDEX;
 		this.startNewGame();
 	}
 
@@ -116,8 +124,8 @@ public class GameEngine {
 		this.levels = levelLoader.getLevels();
 		this.resetLevelRuntime();
 		this.starPowerCounter = 0;
-		player_max_health = PLAYER_START_HEALTH;
-		this.currentLevelindex = START_LEVEL_INDEX;
+		player_max_health = this.startingPlayerLives;
+		this.currentLevelindex = this.startingLevelIndex;
 		this.score = 0;
 		this.nameAsked = false;
 		this.customLevelMode = false;
@@ -816,6 +824,45 @@ public class GameEngine {
 		this.gameState = GameState.PAUSED;
 	}
 
+	public synchronized void setSoundEnabled(boolean soundEnabled)
+	{
+		this.soundLoader.setSoundEnabled(soundEnabled);
+	}
+
+	public synchronized boolean isSoundEnabled()
+	{
+		return this.soundLoader.isSoundEnabled();
+	}
+
+	public synchronized void toggleSound()
+	{
+		this.setSoundEnabled(!this.isSoundEnabled());
+	}
+
+	public synchronized int getStartingPlayerLives()
+	{
+		return this.startingPlayerLives;
+	}
+
+	public synchronized void setStartingPlayerLives(int startingPlayerLives)
+	{
+		if(startingPlayerLives < MIN_PLAYER_LIVES || startingPlayerLives > MAX_PLAYER_LIVES)
+			throw new IllegalArgumentException("Player lives must be between " + MIN_PLAYER_LIVES + " and " + MAX_PLAYER_LIVES + ".");
+		this.startingPlayerLives = startingPlayerLives;
+	}
+
+	public synchronized int getStartLevel()
+	{
+		return this.startingLevelIndex + 1;
+	}
+
+	public synchronized void setStartLevel(int startLevel)
+	{
+		if(startLevel < MIN_START_LEVEL || startLevel > MAX_START_LEVEL)
+			throw new IllegalArgumentException("Start level must be between " + MIN_START_LEVEL + " and " + MAX_START_LEVEL + ".");
+		this.startingLevelIndex = startLevel - 1;
+	}
+
 	public void askNameAndSaveScore() 
 	{
 		String name = JOptionPane.showInputDialog(null,"Enter your name:","Game Over",JOptionPane.PLAIN_MESSAGE);
@@ -836,7 +883,7 @@ public class GameEngine {
 		this.resetLevelRuntime();
 		this.currentLevelindex = 0;
 		this.starPowerCounter = 0;
-		this.player_max_health = PLAYER_START_HEALTH;
+		this.player_max_health = this.startingPlayerLives;
 		this.score = 0;
 		this.nameAsked = false;
 		this.customLevelMode = true;

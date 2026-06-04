@@ -90,4 +90,12 @@ public class ScoreManager {
             topScores.add(scores.get(i));
         return topScores;
     }
+
+	public boolean clearScores()
+	{
+		File file = new File(FILE_NAME);
+		if(!file.exists())
+			return true;
+		return file.delete();
+	}
 }

@@ -40,7 +40,7 @@ public abstract class Model extends GameObject {
 		if(!active)
 			return;
 		g.drawImage(this.frame, this.drawX, this.drawY, this.size, this.size, null);
-		this.drawHitbox(g);
+		//this.drawHitbox(g);
 	}
 
 	public boolean getActive()

@@ -27,10 +27,11 @@ public class MainMenuPanel extends JPanel {
 
 	private Rectangle newGameButton = new Rectangle(455, 520, 500, 85);
 	private Rectangle mapEditorButton = new Rectangle(455, 610, 500, 85);
-	private Rectangle highScoresButton = new Rectangle(455, 700, 500, 85);
-	private Rectangle helpButton = new Rectangle(455, 795, 500, 85);
-	private Rectangle aboutButton = new Rectangle(455, 885, 500, 85);
-	private Rectangle exitButton = new Rectangle(455, 975, 500, 85);
+	private Rectangle optionsButton = new Rectangle(455, 690, 500, 85);
+	private Rectangle highScoresButton = new Rectangle(455, 780, 500, 85);
+	private Rectangle helpButton = new Rectangle(455, 870, 500, 85);
+	private Rectangle aboutButton = new Rectangle(455, 955, 500, 85);
+	private Rectangle exitButton = new Rectangle(455, 1035, 500, 85);
 
 	public MainMenuPanel(CardLayout cards, JPanel rootPanel, MainFrame windowMain, GameEngine engine,
 			GamePanel gameWindow, SidePanel sidePanelWindow)
@@ -73,6 +74,8 @@ public class MainMenuPanel extends JPanel {
 			startNewGame();
 		else if(mapEditorButton.contains(imageX, imageY))
 			cards.show(rootPanel, "MAP_EDITOR");
+		else if(optionsButton.contains(imageX, imageY))
+			cards.show(rootPanel, "OPTIONS");
 		else if(highScoresButton.contains(imageX, imageY))
 			cards.show(rootPanel, "HIGH_SCORES");
 		else if(helpButton.contains(imageX, imageY))

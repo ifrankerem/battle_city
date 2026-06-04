@@ -8,6 +8,7 @@ import java.io.InputStream;
 
 
 public class SoundLoader {
+	private boolean soundEnabled;
 	private Clip shootSound[];
 	private int shootSoundIndex;
 	private Clip tankExplosionSound[];
@@ -27,6 +28,7 @@ public class SoundLoader {
 
 	public SoundLoader()
 	{
+		this.soundEnabled = true;
 		this.shootSound = new Clip[5];
 		this.tankExplosionSound = new Clip[5];
 		this.bigTankSound = new Clip[5];
@@ -72,9 +74,49 @@ public class SoundLoader {
 		}
 	}
 
+	public void setSoundEnabled(boolean soundEnabled)
+	{
+		this.soundEnabled = soundEnabled;
+		if(!soundEnabled)
+			this.stopAllSounds();
+	}
+
+	public boolean isSoundEnabled()
+	{
+		return soundEnabled;
+	}
+
+	private void stopClip(Clip clip)
+	{
+		if(clip != null && clip.isRunning())
+			clip.stop();
+	}
+
+	private void stopClipArray(Clip[] clips)
+	{
+		if(clips == null)
+			return;
+
+		for(Clip clip : clips)
+			stopClip(clip);
+	}
+
+	private void stopAllSounds()
+	{
+		stopClipArray(shootSound);
+		stopClipArray(tankExplosionSound);
+		stopClipArray(bigTankSound);
+		stopClipArray(brickBreakSound);
+		stopClipArray(steelHitSound);
+		stopClipArray(powerUpAppearedSound);
+		stopClipArray(powerUpObtainedSound);
+		stopClip(pauseSound);
+		stopClip(gameOverSound);
+	}
+
 	public void playShoot()
 	{
-		if(shootSound == null)
+		if(!soundEnabled || shootSound == null)
 			return;
 
 		Clip clip = shootSound[shootSoundIndex];
@@ -93,7 +135,7 @@ public class SoundLoader {
 
 	public void playTankExplosion()
 	{
-		if(tankExplosionSound == null)
+		if(!soundEnabled || tankExplosionSound == null)
 			return;
 
 		Clip clip = tankExplosionSound[tankExplosionSoundIndex];
@@ -112,7 +154,7 @@ public class SoundLoader {
 
 	public void playBigTankSound()
 	{
-		if(bigTankSound == null)
+		if(!soundEnabled || bigTankSound == null)
 			return;
 
 		Clip clip = bigTankSound[bigTankSoundIndex];
@@ -131,7 +173,7 @@ public class SoundLoader {
 
 	public void playBrickBreak()
 	{
-		if(brickBreakSound == null)
+		if(!soundEnabled || brickBreakSound == null)
 			return;
 
 		Clip clip = brickBreakSound[brickBreakSoundIndex];
@@ -150,7 +192,7 @@ public class SoundLoader {
 
 	public void playSteelHit()
 	{
-		if(steelHitSound == null)
+		if(!soundEnabled || steelHitSound == null)
 			return;
 
 		Clip clip = steelHitSound[steelHitSoundIndex];
@@ -169,7 +211,7 @@ public class SoundLoader {
 
 	public void playPowerUpAppeared()
 	{
-		if(powerUpAppearedSound == null)
+		if(!soundEnabled || powerUpAppearedSound == null)
 			return;
 
 		Clip clip = powerUpAppearedSound[powerUpAppearedSoundIndex];
@@ -188,7 +230,7 @@ public class SoundLoader {
 
 	public void playPowerUpObtained()
 	{
-		if(powerUpObtainedSound == null)
+		if(!soundEnabled || powerUpObtainedSound == null)
 			return;
 
 		Clip clip = powerUpObtainedSound[powerUpObtainedSoundIndex];
@@ -207,7 +249,7 @@ public class SoundLoader {
 
 	public void playPause()
 	{
-		if(pauseSound == null)
+		if(!soundEnabled || pauseSound == null)
 			return;
 
 		if(pauseSound.isRunning())
@@ -218,7 +260,7 @@ public class SoundLoader {
 
 	public void playGameOver()
 	{
-		if(gameOverSound == null)
+		if(!soundEnabled || gameOverSound == null)
 			return;
 
 		if(gameOverSound.isRunning())
