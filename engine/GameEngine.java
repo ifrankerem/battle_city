@@ -44,7 +44,7 @@ import java.awt.Color;
 public class GameEngine {
 
 	public static final int MIN_PLAYER_LIVES = 1;
-	public static final int MAX_PLAYER_LIVES = 9;
+	public static final int MAX_PLAYER_LIVES = 99;
 	public static final int MIN_START_LEVEL = 1;
 	public static final int MAX_START_LEVEL = 37;
 	private InputManager iManager;
@@ -789,10 +789,10 @@ public class GameEngine {
 			Iterator <AnimatedModel> eit = animatedModels.iterator();
 			while(eit.hasNext())
 				eit.next().draw(g);
+			levels[currentLevelindex].topdraw(g);
 			Iterator <PowerUp> pit = powerUps.iterator();
 			while(pit.hasNext())
 				pit.next().draw(g);
-			levels[currentLevelindex].topdraw(g);
 			Iterator <Model> hit = models.iterator();
 			while(hit.hasNext())
 				hit.next().draw(g);
