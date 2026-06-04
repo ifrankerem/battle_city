@@ -60,6 +60,8 @@ public class GameEngine {
 	private static final int MAX_ENEMY_PER_LEVEL = 20;
 	private static final int PLAYER_START_HEALTH = 3; 
 	private static final int BONUS_SCORE = 500;
+	private static final int MAX_STAR_POWER_LEVEL = 3;
+	private static final int STAR_BULLET_SPEED_BONUS = 2;
 	private int maxEnemy = MAX_ENEMY_PER_LEVEL; 
 	private int score;
 	private int active_enemy_nbr = 0;
@@ -113,6 +115,7 @@ public class GameEngine {
 		levelLoader.loadMaps();
 		this.levels = levelLoader.getLevels();
 		this.resetLevelRuntime();
+		this.starPowerCounter = 0;
 		player_max_health = PLAYER_START_HEALTH;
 		this.currentLevelindex = START_LEVEL_INDEX;
 		this.score = 0;
@@ -142,7 +145,6 @@ public class GameEngine {
 		this.isInvincible = false;
 		this.powerUp13Spawned = false;
 		this.powerUp7Spawned = false;
-		this.starPowerCounter = 0;
 		this.levelCompleteCounter = 0;
 		this.stageLoadCounter = 0;
 		this.gameOverSoundPlayed = false;
@@ -158,6 +160,7 @@ public class GameEngine {
 		}
 
 		this.resetLevelRuntime();
+		this.applyStarPowerToCurrentLevel();
 		this.playerSpawn();
 		this.enemySpawn();
 		this.gameState = GameState.STAGE_LOAD;
@@ -202,10 +205,24 @@ public class GameEngine {
 		if(player_max_health > 0)
 		{
 			animatedModels.add(new Spawn(PLAYER_SPAWN_COORDS[0] - 5, PLAYER_SPAWN_COORDS[1] - 5, iLoader, true));
-			this.starPowerCounter = 0;
 			this.player = new PlayerTank(PLAYER_SPAWN_COORDS[0], PLAYER_SPAWN_COORDS[1], 3.0, Direction.NORTH, iManager,iLoader);
+			this.applyStarPowerToPlayer();
 		}
 
+	}
+
+	private void applyStarPowerToPlayer()
+	{
+		if(this.starPowerCounter >= 1)
+			this.player.incrementBulletSpeed(STAR_BULLET_SPEED_BONUS);
+		if(this.starPowerCounter >= 2)
+			this.player.incrementMaxBullets();
+	}
+
+	private void applyStarPowerToCurrentLevel()
+	{
+		if(this.starPowerCounter >= 3)
+			this.getCurrentLevel().updateSteel();
 	}
 
 	public void update()
@@ -723,7 +740,8 @@ public class GameEngine {
 
 	public int incrementStarPowerCounter()
 	{
-		this.starPowerCounter++;
+		if(this.starPowerCounter < MAX_STAR_POWER_LEVEL)
+			this.starPowerCounter++;
 		return this.starPowerCounter;
 	}
 
@@ -817,6 +835,7 @@ public class GameEngine {
 		this.levels = new Level[] { customLevel };
 		this.resetLevelRuntime();
 		this.currentLevelindex = 0;
+		this.starPowerCounter = 0;
 		this.player_max_health = PLAYER_START_HEALTH;
 		this.score = 0;
 		this.nameAsked = false;
