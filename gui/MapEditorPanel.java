@@ -116,6 +116,25 @@ public class MapEditorPanel extends JPanel implements KeyListener{
 		repaint();
 	}
 
+	public void clearMap()
+	{
+		if(emptyLevel == null)
+			return;
+
+		for(int row = 0; row < GamePanel.MAP_ROWS; row++)
+		{
+			for(int col = 0; col < GamePanel.MAP_COLS; col++)
+			{
+				if(emptyLevel.isInsideMap(row, col))
+					emptyLevel.setTile(row, col, TileEnum.EMPTY);
+			}
+		}
+
+		this.selectedTileType = TileEnum.EMPTY;
+		repaint();
+		requestFocusInWindow();
+	}
+
 
 
 	public void paintComponent(Graphics g)

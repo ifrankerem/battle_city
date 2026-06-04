@@ -24,6 +24,7 @@ public class EditorSidePanel extends JPanel {
 	private JButton playButton;
 	private BufferedImage[] tileImages;
 	private JButton exitButton;
+	private JButton resetButton;
 	
 
 	public EditorSidePanel(GameEngine engine,ImageLoader iLoader,MapEditorPanel mapEditorPanel, MainMenuPanel mainMenuPanel)
@@ -35,6 +36,7 @@ public class EditorSidePanel extends JPanel {
 		this.engine = engine;
 		this.initTileImages();
 		this.initplayButton(mapEditorPanel, mainMenuPanel);
+		this.initResetButton(mapEditorPanel);
 		this.initExitButton(mainMenuPanel);
 	}
 
@@ -57,7 +59,7 @@ public class EditorSidePanel extends JPanel {
 		ImageIcon pauseIcon = new ImageIcon(scaledIcon); //Jbuton wants button
 		playButton = new JButton(pauseIcon);
 		int btnX = (SIDEPANEL_WIDTH - btnSize) / 2;
-		int btnY = GamePanel.GAME_HEIGHT - 150;
+		int btnY = GamePanel.GAME_HEIGHT - 180;
 		playButton.setBounds(btnX, btnY, btnSize, btnSize);
 		playButton.setBorderPainted(false); //disable default borders
 		playButton.setContentAreaFilled(false); //disable default background color
@@ -73,6 +75,39 @@ public class EditorSidePanel extends JPanel {
 			}
 		}); //do unpause and pause also set focus on gamepanel so player can play when unpaused
 		add(playButton); //adding button to sidePanel
+	}
+
+	private void initResetButton(MapEditorPanel mapEditorPanel)
+	{
+		int btnSize = 95;
+		BufferedImage resetImage = iLoader.getResetImage();
+		if(resetImage != null)
+		{
+			Image scaledIcon = resetImage.getScaledInstance(btnSize, btnSize, Image.SCALE_FAST);
+			resetButton = new JButton(new ImageIcon(scaledIcon));
+		}
+		else
+		{
+			resetButton = new JButton("RESET");
+			resetButton.setForeground(Color.WHITE);
+			resetButton.setBackground(Color.decode("#636363"));
+		}
+		int btnX = (SIDEPANEL_WIDTH - btnSize) / 2;
+		int btnY = GamePanel.GAME_HEIGHT - btnSize - 5;
+		resetButton.setBounds(btnX, btnY, btnSize, btnSize);
+		resetButton.setBorderPainted(false);
+		resetButton.setContentAreaFilled(resetImage == null);
+		resetButton.setFocusPainted(false);
+		resetButton.setOpaque(resetImage == null);
+		resetButton.setFocusable(false);
+		resetButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		resetButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				mapEditorPanel.clearMap();
+			}
+		});
+		add(resetButton);
 	}
 
 	private void drawNumber(Graphics g, int number, int x, int y, int digitW, int digitH)
@@ -117,7 +152,7 @@ public class EditorSidePanel extends JPanel {
 		ImageIcon pauseIcon = new ImageIcon(scaledIcon); //Jbuton wants button
 		exitButton = new JButton(pauseIcon);
 		int btnX = (SIDEPANEL_WIDTH - btnSize) / 2;
-		int btnY = GamePanel.GAME_HEIGHT - (btnSize * 2) - 60;
+		int btnY = GamePanel.GAME_HEIGHT - (btnSize * 2) - 90;
 		exitButton.setBounds(btnX, btnY, btnSize, btnSize);
 		exitButton.setBorderPainted(false); //disable default borders
 		exitButton.setContentAreaFilled(false); //disable default background color

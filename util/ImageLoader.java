@@ -44,6 +44,7 @@ public class ImageLoader {
 	private BufferedImage paused_textImage;
 	private BufferedImage stageLoadImage;
 	private BufferedImage playImage;
+	private BufferedImage resetImage;
 	private BufferedImage bonusesImage;
 	private BufferedImage returnToMainMenuImage;
 	private BufferedImage exitPNG;
@@ -84,6 +85,7 @@ public class ImageLoader {
 		this.paused_textImage = loadImage("/resources/images/pause2.png");
 		this.stageLoadImage = loadImage("/resources/images/stageLoad.png");
 		this.playImage = loadImage("/resources/images/play.png");
+		this.resetImage = loadOptionalImage("/resources/images/reset.png");
 		this.bonusesImage = loadImage("/resources/images/bonuses.png");
 		this.returnToMainMenuImage = loadImage("/resources/images/return_to_main_menu.png");
 		this.exitPNG = loadImage("/resources/images/exitPNG.png");
@@ -96,6 +98,21 @@ public class ImageLoader {
 
 			if (stream == null) {
 				throw new RuntimeException("Image not found: " + path);
+			}
+
+			return ImageIO.read(stream);
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Could not load image: " + path, e);
+		}
+	}
+
+	private BufferedImage loadOptionalImage(String path) {
+		try {
+			InputStream stream = getClass().getResourceAsStream(path);
+
+			if (stream == null) {
+				return null;
 			}
 
 			return ImageIO.read(stream);
@@ -288,6 +305,10 @@ public class ImageLoader {
 
 	public BufferedImage getPlayImage() {
 		return playImage;
+	}
+
+	public BufferedImage getResetImage() {
+		return resetImage;
 	}
 
 	public BufferedImage getBonusesImage() {
