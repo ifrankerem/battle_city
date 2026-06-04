@@ -72,7 +72,7 @@ public class Bullet extends GameObject {
 		else if(this.dir == Direction.SOUTH)
 			nextY += this.speed;
 		boolean isInsideMap = nextY >= 0 && (nextY <= GamePanel.GAME_HEIGHT - this.hitbox.height) && (nextX >= 0 && (nextX <= GamePanel.GAME_WIDTH - this.hitbox.width));
-		if(isInsideMap && currentLevel.hitboxControlBullet(nextX, nextY, this.hitbox.width, this.hitbox.height))
+		if(isInsideMap && currentLevel.hitboxControlBullet(nextX, nextY, this.hitbox.width, this.hitbox.height, this))
 		{
 			this.y = nextY;
 			this.x = nextX;

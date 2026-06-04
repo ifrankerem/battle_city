@@ -1,6 +1,8 @@
 package level;
 
 import gui.GamePanel;
+import entity.Bullet;
+import entity.PlayerTank;
 import tile.Base;
 import tile.BrickWall;
 import tile.Bush;
@@ -125,7 +127,7 @@ public class Level {
 		return true;
 	}
 
-	public boolean hitboxControlBullet(double nextX, double nextY, int width ,int height)
+	public boolean hitboxControlBullet(double nextX, double nextY, int width ,int height, Bullet bullet)
 	{
 		lastBulletHitType = HitType.NONE;
 		int leftCol = (int)nextX / GamePanel.MAP_CELL_SIZE;
@@ -141,17 +143,26 @@ public class Level {
 			{
 				// System.out.println("row:" + row + " col: " + col);
 				// System.out.println(tiles[row][col]);
-				if(!tiles[row][col].getisPassable())
+					if(!tiles[row][col].getisPassable())
 					{
-						lastBulletHitType = getBulletHitType(tiles[row][col]);
-						tiles[row][col].setHitted(true);
-						if(tiles[row][col].getDestroyable() == true)
-							tiles[row][col] = new EmptyTile(tiles[row][col].getX(),tiles[row][col].getY(),tiles[row][col].getImageLoader());
+						Tile hitTile = tiles[row][col];
+						lastBulletHitType = getBulletHitType(hitTile);
+						hitTile.setHitted(true);
+						if(canBulletDestroyTile(hitTile, bullet))
+							tiles[row][col] = new EmptyTile(hitTile.getX(), hitTile.getY(), hitTile.getImageLoader());
 						return false;
 					}					
-			}
+				}
 		}
 		return true;
+	}
+
+	private boolean canBulletDestroyTile(Tile tile, Bullet bullet)
+	{
+		if(tile instanceof SteelWall)
+			return tile.getDestroyable() && bullet.getOwnerTank() instanceof PlayerTank;
+
+		return tile.getDestroyable();
 	}
 
 	private HitType getBulletHitType(Tile tile)
